@@ -7,12 +7,13 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorSensorV3;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkAbsoluteEncoder;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 public class Intake extends SubsystemBase {
@@ -24,11 +25,9 @@ public class Intake extends SubsystemBase {
   TalonFX leftShooter = new TalonFX(Constants.leftShooterId);
   TalonFX rightShooter = new TalonFX(Constants.rightShooterId);
 
-  DigitalInput shooterSwitch = new DigitalInput(Constants.limitSwitch);
+  ColorSensorV3 noteChecker = new ColorSensorV3(Port.kOnboard);
   SparkPIDController liftSparkPIDController;
-  SparkPIDController shooterSparkPIDController;
   // variables
-  double setpointDegree;
   boolean noteLoaded = false;
   boolean shooting = false;
   AbsoluteEncoder liftEncoder;
@@ -111,6 +110,11 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    noteLoaded = shooterSwitch.get();
+    if (noteChecker.getIR() > 100){
+      noteLoaded = true;
+    }
+    else {
+      noteLoaded = false;
+    }
   }
 }

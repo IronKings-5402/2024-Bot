@@ -31,7 +31,8 @@ public class Shoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!s_Intake.getNote() || !(s_Intake.mode == IntakeMode.shooter) || !(s_Intake.mode == IntakeMode.amp) ){
+    // if there is not a note or the IntakeMode is not shooter 
+    if (!s_Intake.getNote() || !((s_Intake.mode == IntakeMode.shooter) || (s_Intake.mode == IntakeMode.amp)) ){
       end = true;
     }
 
@@ -40,7 +41,9 @@ public class Shoot extends Command {
       if(timer.get() > 1.0){
         s_Intake.setIntakeMotor(false);
       }
-      
+    }
+    else if (s_Intake.mode == IntakeMode.amp){
+      s_Intake.setIntakeMotor(true);
     }
 
     
@@ -51,6 +54,7 @@ public class Shoot extends Command {
   public void end(boolean interrupted) {
     timer.stop();
     timer.reset();
+    s_Intake.setShooter(0);
     s_Intake.stopIntake();
   }
 
