@@ -4,33 +4,34 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkAbsoluteEncoder.Type;
-import com.revrobotics.SparkAbsoluteEncoder;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   // motors and devices
-  CANSparkMax intakeLiftRight = new CANSparkMax(Constants.rightIntakeId, MotorType.kBrushless);
-  CANSparkMax intakeLiftLeft = new CANSparkMax(Constants.leftIntakeId, MotorType.kBrushless);
-  TalonFX intake = new TalonFX(Constants.intakeId);
+  TalonFX intakeLiftRight = new TalonFX(Constants.rightIntakeId);
+  TalonFX intakeLiftLeft = new TalonFX(Constants.leftIntakeId);
+  TalonSRX intake = new TalonSRX(Constants.intakeId);
   TalonFX leftShooter = new TalonFX(Constants.leftShooterId);
   TalonFX rightShooter = new TalonFX(Constants.rightShooterId);
-
+  DutyCycleEncoder encoder = new DutyCycleEncoder(new DigitalInput(0));
   ColorSensorV3 noteChecker = new ColorSensorV3(Port.kOnboard);
-  SparkPIDController liftSparkPIDController;
   // variables
   boolean noteLoaded = false;
   boolean shooting = false;
   AbsoluteEncoder liftEncoder;
+  PIDController controller = new PIDController(Constants.intakeP, 0, 0);
 
   public enum IntakeMode {
     normal,
@@ -43,17 +44,10 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     intakeLiftRight.setInverted(true);
-
-    liftSparkPIDController = intakeLiftRight.getPIDController();
-    liftEncoder = intakeLiftRight.getAbsoluteEncoder(Type.kDutyCycle);
-    liftSparkPIDController.setP(Constants.intakeP);
-    liftSparkPIDController.setFeedbackDevice(liftEncoder);
-
-    intakeLiftRight.burnFlash();
   }
 
   public double getEncoder(){
-    return intakeLiftRight.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).getPosition();
+    return encoder.getAbsolutePosition();
   }
 
   public boolean getNote(){
@@ -62,9 +56,9 @@ public class Intake extends SubsystemBase {
 
   public void goToSetpoint(double setpoint){
     setpoint /= 360.0;
-    
-    liftSparkPIDController.setReference(setpoint, ControlType.kDutyCycle);
-    intakeLiftLeft.follow(intakeLiftRight);
+    double calculatedSpeed = controller.calculate(getEncoder(), setpoint);
+    intakeLiftLeft.set(calculatedSpeed);
+    intakeLiftRight.set(calculatedSpeed);
   }
 
   public void setShooter(double speed){
@@ -77,10 +71,10 @@ public class Intake extends SubsystemBase {
     if (this.mode == IntakeMode.normal) {
       setpoint = Constants.intakeDegree;
       if (!noteLoaded){
-        intake.set(Constants.intakeSpeed);
+        setIntakeMotor(false);
       }
       else {
-        intake.set(0);
+        stopIntake();
       } 
     }
     else if (this.mode == IntakeMode.shooter){
@@ -98,14 +92,14 @@ public class Intake extends SubsystemBase {
 
   public void setIntakeMotor(boolean reverse){
     if(reverse){
-      intake.set(-Constants.intakeSpeed);
+      intake.set(ControlMode.PercentOutput, -Constants.intakeSpeed);
     }
     else {
-      intake.set(Constants.intakeSpeed);
+      intake.set(ControlMode.PercentOutput, Constants.intakeSpeed);
     }
   }
   public void stopIntake(){
-    intake.set(0);
+    intake.set(ControlMode.PercentOutput ,0);
   }
 
   @Override
@@ -116,5 +110,7 @@ public class Intake extends SubsystemBase {
     else {
       noteLoaded = false;
     }
+    SmartDashboard.putBoolean("Note Loaded", noteLoaded);
+    SmartDashboard.putString("Intake Mode", mode.name());
   }
 }

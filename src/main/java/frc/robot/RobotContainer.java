@@ -5,10 +5,11 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake.IntakeMode;
@@ -30,14 +31,14 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton rightBumper = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton aButton = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton bButton = new JoystickButton(driver, XboxController.Button.kB.value);
+    private final JoystickButton shooter = new JoystickButton(operator, 1);
 
     private final JoystickButton topLeft = new JoystickButton(operator, 7);
     private final JoystickButton midLeft = new JoystickButton(operator, 9);
     private final JoystickButton bottomLeft = new JoystickButton(operator, 11);
-    private final JoystickButton midRight = new JoystickButton(operator, 10);
+    //private final JoystickButton midRight = new JoystickButton(operator, 10);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -46,8 +47,12 @@ public class RobotContainer {
 
     // commands 
     Command shoot = new Shoot(s_Intake);
-    // maybe works?
 
+    // autos 
+    private String mainAuto = "MainAuto";
+    private String backupAuto = "BackupAuto";
+
+    SendableChooser<String> m_chooser = new SendableChooser<>();
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         s_Swerve.setDefaultCommand(
@@ -60,6 +65,9 @@ public class RobotContainer {
             )
         );
 
+        m_chooser.setDefaultOption("Main Auto", mainAuto);
+        m_chooser.addOption("Backup Auto", backupAuto);
+        SmartDashboard.putData(m_chooser);
         // Configure the button bindings
         s_Intake.setDefaultCommand(new InstantCommand(() -> s_Intake.intake(), s_Intake));
         configureButtonBindings();
@@ -73,14 +81,13 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        rightBumper.whileTrue(shoot);
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         aButton.whileTrue(new InstantCommand(() -> s_Climber.climberUp()));
         bButton.whileTrue(new InstantCommand(() -> s_Climber.climberDown()));
         topLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
         midLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
         bottomLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.amp)));
-
+        shooter.whileTrue(shoot.alongWith(new InstantCommand(() -> s_Intake.intake())));
 
         //rightBumper.onTrue(new InstantCommand(() -> s_Intake.))
     }
@@ -92,6 +99,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new PathPlannerAuto("MainAuto");
+        return new PathPlannerAuto(m_chooser.getSelected());
     }
 }

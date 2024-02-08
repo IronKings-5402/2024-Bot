@@ -18,7 +18,6 @@ public class Shoot extends Command {
   public Shoot(Intake s_Intake) {
     this.s_Intake = s_Intake;
     addRequirements(this.s_Intake);
-
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -42,11 +41,10 @@ public class Shoot extends Command {
         s_Intake.setIntakeMotor(false);
       }
     }
+
     else if (s_Intake.mode == IntakeMode.amp){
       s_Intake.setIntakeMotor(true);
-    }
-
-    
+    }    
   }
 
   // Called once the command ends or is interrupted.
@@ -56,6 +54,7 @@ public class Shoot extends Command {
     timer.reset();
     s_Intake.setShooter(0);
     s_Intake.stopIntake();
+    s_Intake.setIntakeMode(IntakeMode.normal);
   }
 
   // Returns true when the command should end.
