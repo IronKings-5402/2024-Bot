@@ -82,8 +82,11 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        aButton.whileTrue(new InstantCommand(() -> s_Climber.climberUp()));
-        bButton.whileTrue(new InstantCommand(() -> s_Climber.climberDown()));
+        aButton.onTrue(new InstantCommand(() -> s_Climber.climberUp()));
+        bButton.onTrue(new InstantCommand(() -> s_Climber.climberDown()));
+        aButton.onFalse(new InstantCommand(() -> s_Climber.climberStop()));
+        bButton.onFalse(new InstantCommand(() -> s_Climber.climberStop()));
+
         topLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
         midLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
         bottomLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.amp)));
