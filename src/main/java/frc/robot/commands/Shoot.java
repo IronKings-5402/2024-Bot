@@ -44,7 +44,7 @@ public class Shoot extends Command {
 
     else if (s_Intake.mode == IntakeMode.amp){
       s_Intake.setIntakeMotor(true);
-    }    
+    }
   }
 
   // Called once the command ends or is interrupted.

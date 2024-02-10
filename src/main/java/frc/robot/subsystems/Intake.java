@@ -20,12 +20,12 @@ import frc.robot.Constants;
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   // motors and devices
-  TalonFX intakeLiftRight = new TalonFX(Constants.rightIntakeId);
-  TalonFX intakeLiftLeft = new TalonFX(Constants.leftIntakeId);
+  TalonFX intakeLiftRight = new TalonFX(Constants.rightIntakeLiftId);
+  TalonFX intakeLiftLeft = new TalonFX(Constants.leftIntakeLiftId);
   TalonSRX intake = new TalonSRX(Constants.intakeId);
   TalonFX leftShooter = new TalonFX(Constants.leftShooterId);
   TalonFX rightShooter = new TalonFX(Constants.rightShooterId);
-  DutyCycleEncoder encoder = new DutyCycleEncoder(new DigitalInput(0));
+  DutyCycleEncoder encoder = new DutyCycleEncoder(new DigitalInput(Constants.encoder));
   ColorSensorV3 noteChecker = new ColorSensorV3(Port.kOnboard);
   // variables
   boolean noteLoaded = false;
@@ -110,6 +110,7 @@ public class Intake extends SubsystemBase {
     else {
       noteLoaded = false;
     }
+    SmartDashboard.putNumber("Encoder Value", getEncoder());
     SmartDashboard.putBoolean("Note Loaded", noteLoaded);
     SmartDashboard.putString("Intake Mode", mode.name());
   }

@@ -183,8 +183,10 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic(){
         estimator.update(getGyroYaw(), getModulePositions());
-        double latencyCorrection = Timer.getFPGATimestamp() - LimelightHelpers.getLatency_Pipeline("limelight")/1000 - LimelightHelpers.getLatency_Capture("limelight")/1000;
-        estimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue("limelight"), latencyCorrection);
+        if (LimelightHelpers.getTV("limelight")){
+            double latencyCorrection = Timer.getFPGATimestamp() - LimelightHelpers.getLatency_Pipeline("limelight")/1000 - LimelightHelpers.getLatency_Capture("limelight")/1000;
+            estimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue("limelight"), latencyCorrection);
+        }
         //swerveOdometry.update(getGyroYaw(), getModulePositions());
 
         for(SwerveModule mod : mSwerveMods){

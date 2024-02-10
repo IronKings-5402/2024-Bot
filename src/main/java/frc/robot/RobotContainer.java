@@ -34,7 +34,7 @@ public class RobotContainer {
     private final JoystickButton aButton = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton bButton = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton shooter = new JoystickButton(operator, 1);
-
+    private final JoystickButton rightBumper = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton topLeft = new JoystickButton(operator, 7);
     private final JoystickButton midLeft = new JoystickButton(operator, 9);
     private final JoystickButton bottomLeft = new JoystickButton(operator, 11);
@@ -47,7 +47,8 @@ public class RobotContainer {
 
     // commands 
     Command shoot = new Shoot(s_Intake);
-
+    Command autoShoot = new Shoot(s_Intake).withTimeout(1);
+    Command followNote = new FollowNote(s_Swerve, () -> -driver.getRawAxis(translationAxis));
     // autos 
     private String mainAuto = "MainAuto";
     private String backupAuto = "BackupAuto";
@@ -91,7 +92,7 @@ public class RobotContainer {
         midLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
         bottomLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.amp)));
         shooter.whileTrue(shoot.alongWith(new InstantCommand(() -> s_Intake.intake())));
-
+        rightBumper.whileTrue(followNote);
         //rightBumper.onTrue(new InstantCommand(() -> s_Intake.))
     }
 

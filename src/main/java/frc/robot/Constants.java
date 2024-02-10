@@ -14,27 +14,22 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
-    public static final int leftIntakeId = 99;
-    public static final int rightIntakeId = 98;
-    public static final int intakeId = 97;
+    public static final int leftIntakeLiftId = 99;
+    public static final int rightIntakeLiftId = 98;
+    public static final int intakeId = 5;
     public static final int leftClimberId = 96;
     public static final int rightClimberId = 95;
-    public static final int rightShooterId = 94;
-    public static final int leftShooterId = 93;
-    public static final int intakeLift = 92;
+    public static final int rightShooterId = 4;
+    public static final int leftShooterId = 3;
     public static final int encoder = 0;
-    public static final int limitSwitch = 1;
-
-    public static final double intakeSpeed = .5;
-    public static final double toShooterSpeed = -.2;
+    public static final double pigeonOffset = 5;
 
     public static final double intakeDegree = 120;
     public static final double shooterDegree = 160; 
     public static final double ampDegree = 170;
 
+    public static final double intakeSpeed = .5;
     public static final double shooterSpeed = .75;
-    public static final double nonAmpMode = 90;
-    public static final double ampSpeed = 120;
 
 
     //intake PID
@@ -43,7 +38,6 @@ public final class Constants {
 
     public static final class Swerve {
         public static final int pigeonID = 2;
-
         public static final COTSTalonFXSwerveConstants chosenModule = 
         COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L3);
 
