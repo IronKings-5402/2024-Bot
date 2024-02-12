@@ -14,8 +14,8 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
-    public static final int leftIntakeLiftId = 99;
-    public static final int rightIntakeLiftId = 98;
+    public static final int leftIntakeLiftId = 7;
+    public static final int rightIntakeLiftId = 8;
     public static final int intakeId = 5;
     public static final int leftClimberId = 96;
     public static final int rightClimberId = 95;
@@ -24,12 +24,13 @@ public final class Constants {
     public static final int encoder = 0;
     public static final double pigeonOffset = 5;
 
-    public static final double intakeDegree = 120;
-    public static final double shooterDegree = 160; 
-    public static final double ampDegree = 170;
+    public static final double intakeDegree = 97.0;
+    public static final double shooterDegree = 116.0; 
+    public static final double ampDegree = 170.0;
 
     public static final double intakeSpeed = .5;
     public static final double shooterSpeed = .75;
+    public static final double intakeMaxSpeed = .35;
 
 
     //intake PID
