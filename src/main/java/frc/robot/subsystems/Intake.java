@@ -7,9 +7,11 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.ColorSensorV3;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -26,7 +28,7 @@ public class Intake extends SubsystemBase {
   TalonFX leftShooter = new TalonFX(Constants.leftShooterId);
   TalonFX rightShooter = new TalonFX(Constants.rightShooterId);
   DutyCycleEncoder encoder = new DutyCycleEncoder(new DigitalInput(Constants.encoder));
-  ColorSensorV3 noteChecker = new ColorSensorV3(Port.kOnboard);
+  DigitalInput noteChecker = new DigitalInput(1);
   // variables
   boolean noteLoaded = false;
   boolean shooting = false;
@@ -43,11 +45,14 @@ public class Intake extends SubsystemBase {
   public IntakeMode mode = IntakeMode.normal;
 
   public Intake() {
-    intakeLiftRight.setInverted(true);
+    intakeLiftLeft.setNeutralMode(NeutralModeValue.Brake);
+    intakeLiftRight.setNeutralMode(NeutralModeValue.Brake);
+    intakeLiftRight.setInverted(false);
+    intakeLiftLeft.setInverted(true);
   }
 
   public double getEncoder(){
-    return encoder.getAbsolutePosition();
+    return encoder.getAbsolutePosition()*360;
   }
 
   public boolean getNote(){
@@ -55,8 +60,8 @@ public class Intake extends SubsystemBase {
   }
 
   public void goToSetpoint(double setpoint){
-    setpoint /= 360.0;
     double calculatedSpeed = controller.calculate(getEncoder(), setpoint);
+    calculatedSpeed = MathUtil.clamp(calculatedSpeed, -.20, .20);
     intakeLiftLeft.set(calculatedSpeed);
     intakeLiftRight.set(calculatedSpeed);
   }
@@ -71,7 +76,7 @@ public class Intake extends SubsystemBase {
     if (this.mode == IntakeMode.normal) {
       setpoint = Constants.intakeDegree;
       if (!noteLoaded){
-        setIntakeMotor(false);
+        setIntakeMotor(true);
       }
       else {
         stopIntake();
@@ -104,13 +109,14 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (noteChecker.getIR() > 100){
+    if (!noteChecker.get()){
       noteLoaded = true;
     }
     else {
       noteLoaded = false;
     }
     SmartDashboard.putNumber("Encoder Value", getEncoder());
+    SmartDashboard.putBoolean("Beam Break", noteChecker.get());
     SmartDashboard.putBoolean("Note Loaded", noteLoaded);
     SmartDashboard.putString("Intake Mode", mode.name());
   }

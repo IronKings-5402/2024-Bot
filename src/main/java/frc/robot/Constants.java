@@ -24,17 +24,17 @@ public final class Constants {
     public static final int encoder = 0;
     public static final double pigeonOffset = 5;
 
-    public static final double intakeDegree = 97.0;
+    public static final double intakeDegree = 91.0;
     public static final double shooterDegree = 116.0; 
     public static final double ampDegree = 170.0;
 
     public static final double intakeSpeed = .5;
     public static final double shooterSpeed = .75;
     public static final double intakeMaxSpeed = .35;
-
+    public static final int lightSensorID = 1;
 
     //intake PID
-    public static final double intakeP = .25;
+    public static final double intakeP = .125;
 
 
     public static final class Swerve {
