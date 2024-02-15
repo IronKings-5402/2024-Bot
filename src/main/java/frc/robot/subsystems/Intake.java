@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -15,6 +16,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,10 +33,10 @@ public class Intake extends SubsystemBase {
   DigitalInput noteChecker = new DigitalInput(1);
   // variables
   boolean noteLoaded = false;
-  boolean shooting = false;
+  boolean jerkedBack = false;
   AbsoluteEncoder liftEncoder;
   PIDController controller = new PIDController(Constants.intakeP, 0, 0);
-
+  Timer jerkBackTimer = new Timer();
   public enum IntakeMode {
     normal,
     shooter,
@@ -45,6 +47,7 @@ public class Intake extends SubsystemBase {
   public IntakeMode mode = IntakeMode.normal;
 
   public Intake() {
+    intake.setNeutralMode(NeutralMode.Brake);
     intakeLiftLeft.setNeutralMode(NeutralModeValue.Brake);
     intakeLiftRight.setNeutralMode(NeutralModeValue.Brake);
     intakeLiftRight.setInverted(false);
@@ -76,18 +79,33 @@ public class Intake extends SubsystemBase {
     if (this.mode == IntakeMode.normal) {
       setpoint = Constants.intakeDegree;
       if (!noteLoaded){
+        jerkedBack = false;
         setIntakeMotor(true);
       }
       else {
-        stopIntake();
+        if (!jerkedBack){
+          jerkBackTimer.start();
+          setIntakeMotor(false, .2);
+          if (jerkBackTimer.get() > Constants.jerkBackTime){
+            jerkedBack = true;
+          }
+        }
+        else {
+          jerkBackTimer.stop();
+          jerkBackTimer.reset();
+          stopIntake();
+        }
       } 
     }
+
     else if (this.mode == IntakeMode.shooter){
       setpoint = Constants.shooterDegree;
     }
+
     else if (this.mode == IntakeMode.amp){
       setpoint = Constants.ampDegree;
-      }
+    }
+
     goToSetpoint(setpoint);
   }
 
@@ -103,6 +121,16 @@ public class Intake extends SubsystemBase {
       intake.set(ControlMode.PercentOutput, Constants.intakeSpeed);
     }
   }
+
+  public void setIntakeMotor(boolean reverse, double speed){
+    if(reverse){
+      intake.set(ControlMode.PercentOutput, -speed);
+    }
+    else {
+      intake.set(ControlMode.PercentOutput, speed);
+    }
+  }
+
   public void stopIntake(){
     intake.set(ControlMode.PercentOutput ,0);
   }
@@ -117,6 +145,7 @@ public class Intake extends SubsystemBase {
     }
     SmartDashboard.putNumber("Encoder Value", getEncoder());
     SmartDashboard.putBoolean("Beam Break", noteChecker.get());
+    SmartDashboard.putBoolean("Jerked Back", jerkedBack);
     SmartDashboard.putBoolean("Note Loaded", noteLoaded);
     SmartDashboard.putString("Intake Mode", mode.name());
   }

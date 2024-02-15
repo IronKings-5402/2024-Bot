@@ -31,14 +31,18 @@ public class Shoot extends Command {
   @Override
   public void execute() {
     // if there is not a note or the IntakeMode is not shooter 
-    if (!s_Intake.getNote() || !((s_Intake.mode == IntakeMode.shooter) || (s_Intake.mode == IntakeMode.amp)) ){
+    if (!((s_Intake.mode == IntakeMode.shooter) || (s_Intake.mode == IntakeMode.amp))){
       end = true;
     }
 
     if (s_Intake.mode == IntakeMode.shooter){
       s_Intake.setShooter(Constants.shooterSpeed);
       if(timer.get() > 1.0){
-        s_Intake.setIntakeMotor(false);
+        s_Intake.setIntakeMotor(true);
+      }
+      // timeout  
+      else if (timer.get()> 2.0){
+        end = true;
       }
     }
 
@@ -55,6 +59,7 @@ public class Shoot extends Command {
     s_Intake.setShooter(0);
     s_Intake.stopIntake();
     s_Intake.setIntakeMode(IntakeMode.normal);
+    end = false;
   }
 
   // Returns true when the command should end.

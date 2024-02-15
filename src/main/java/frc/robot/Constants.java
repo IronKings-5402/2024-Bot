@@ -32,6 +32,7 @@ public final class Constants {
     public static final double shooterSpeed = .75;
     public static final double intakeMaxSpeed = .35;
     public static final int lightSensorID = 1;
+    public static final double jerkBackTime = .1;
 
     //intake PID
     public static final double intakeP = .125;

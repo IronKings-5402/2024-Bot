@@ -11,26 +11,26 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Climber extends SubsystemBase {
-  CANSparkMax leftClimber = new CANSparkMax(Constants.leftClimberId, MotorType.kBrushless);
-  CANSparkMax rightClimber = new CANSparkMax(Constants.rightClimberId, MotorType.kBrushless);
+  //CANSparkMax leftClimber = new CANSparkMax(Constants.leftClimberId, MotorType.kBrushless);
+  //CANSparkMax rightClimber = new CANSparkMax(Constants.rightClimberId, MotorType.kBrushless);
   /** Creates a new Climber. */
   public Climber() {
-    this.rightClimber.setInverted(true);
+    //this.rightClimber.setInverted(true);
   }
 
   public void climberUp(){
-    leftClimber.set(.5);
-    rightClimber.set(.5);
+  //  leftClimber.set(.5);
+  //  rightClimber.set(.5);
   }
 
   public void climberDown(){
-    leftClimber.set(-.5);
-    rightClimber.set(-.5);
+  //  leftClimber.set(-.5);
+ //   rightClimber.set(-.5);
   }
 
   public void climberStop(){
-    leftClimber.set(0);
-    rightClimber.set(0);
+  //  leftClimber.set(0);
+  //  rightClimber.set(0);
   }
 
   @Override
