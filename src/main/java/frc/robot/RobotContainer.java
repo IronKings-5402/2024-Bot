@@ -36,7 +36,9 @@ public class RobotContainer {
     private final JoystickButton shooter = new JoystickButton(operator, 1);
     private final JoystickButton rightBumper = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton topLeft = new JoystickButton(operator, 7);
+    private final JoystickButton topRight = new JoystickButton(operator, 8);
     private final JoystickButton midLeft = new JoystickButton(operator, 9);
+    private final JoystickButton midRight = new JoystickButton(operator, 10);
     private final JoystickButton bottomLeft = new JoystickButton(operator, 11);
     //private final JoystickButton midRight = new JoystickButton(operator, 10);
 
@@ -46,8 +48,8 @@ public class RobotContainer {
     private final Climber s_Climber = new Climber();
 
     // commands 
-    Command shoot = new Shoot(s_Intake);
-    Command autoShoot = new Shoot(s_Intake).withTimeout(1);
+    Command shoot = new Shoot(s_Intake,s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis));
+    Command autoShoot = new Shoot(s_Intake, s_Swerve, () -> 0, () -> 0).withTimeout(1);
     Command followNote = new FollowNote(s_Swerve, () -> -driver.getRawAxis(translationAxis));
     // autos 
     private String mainAuto = "MainAuto";
@@ -91,6 +93,9 @@ public class RobotContainer {
         topLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
         midLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
         bottomLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.amp)));
+        topRight.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.halt)));
+
+        midRight.onTrue(new InstantCommand(() -> s_Intake.toggleIntake()));
         shooter.whileTrue(shoot.alongWith(new InstantCommand(() -> s_Intake.intake())));
         rightBumper.whileTrue(followNote);
         //rightBumper.onTrue(new InstantCommand(() -> s_Intake.))

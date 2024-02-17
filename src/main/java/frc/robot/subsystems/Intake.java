@@ -3,24 +3,21 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   // motors and devices
@@ -33,10 +30,11 @@ public class Intake extends SubsystemBase {
   DigitalInput noteChecker = new DigitalInput(1);
   // variables
   boolean noteLoaded = false;
-  boolean jerkedBack = false;
+  boolean intakeOn = false;
   AbsoluteEncoder liftEncoder;
   PIDController controller = new PIDController(Constants.intakeP, 0, 0);
-  Timer jerkBackTimer = new Timer();
+  Swerve s_Swerve;
+  double distance = 0;
   public enum IntakeMode {
     normal,
     shooter,
@@ -44,7 +42,7 @@ public class Intake extends SubsystemBase {
     halt
   };
 
-  public IntakeMode mode = IntakeMode.normal;
+  public IntakeMode mode = IntakeMode.shooter;
 
   public Intake() {
     intake.setNeutralMode(NeutralMode.Brake);
@@ -78,24 +76,17 @@ public class Intake extends SubsystemBase {
     double setpoint = Constants.intakeDegree;
     if (this.mode == IntakeMode.normal) {
       setpoint = Constants.intakeDegree;
-      if (!noteLoaded){
-        jerkedBack = false;
-        setIntakeMotor(true);
-      }
-      else {
-        if (!jerkedBack){
-          jerkBackTimer.start();
-          setIntakeMotor(false, .2);
-          if (jerkBackTimer.get() > Constants.jerkBackTime){
-            jerkedBack = true;
-          }
+      if (intakeOn){
+        if (!noteLoaded){
+          setIntakeMotor(true);
         }
         else {
-          jerkBackTimer.stop();
-          jerkBackTimer.reset();
           stopIntake();
         }
-      } 
+      }
+      else {
+        stopIntake();
+      }
     }
 
     else if (this.mode == IntakeMode.shooter){
@@ -106,7 +97,20 @@ public class Intake extends SubsystemBase {
       setpoint = Constants.ampDegree;
     }
 
+    else if (this.mode == IntakeMode.halt){
+      setpoint = Constants.haltDegree;
+      stopIntake();
+    }
+
     goToSetpoint(setpoint);
+  }
+
+  public void toggleIntake(){
+    intakeOn = !intakeOn;
+  }
+
+  public void toggleIntake(boolean value){
+    intakeOn = value;
   }
 
   public void setIntakeMode(IntakeMode mode) {
@@ -135,6 +139,7 @@ public class Intake extends SubsystemBase {
     intake.set(ControlMode.PercentOutput ,0);
   }
 
+
   @Override
   public void periodic() {
     if (!noteChecker.get()){
@@ -143,9 +148,26 @@ public class Intake extends SubsystemBase {
     else {
       noteLoaded = false;
     }
+
+    // AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+
+    // Optional<Pose3d> id3 = layout.getTagPose(3);
+    // Translation2d id = id3.get().toPose2d().getTranslation();
+    // Translation2d pose = LimelightHelpers.getBotPose3d_wpiBlue("limelight-april").toPose2d().getTranslation();
+    // distance = pose.getDistance(id);
+
+    distance = (60-15.625)/ Math.tan(Math.toRadians(LimelightHelpers.getTY("limelight-april")+29));
     SmartDashboard.putNumber("Encoder Value", getEncoder());
+    SmartDashboard.putNumber("Distance", distance);
+    if (LimelightHelpers.getTV("limelight-april")){
+      SmartDashboard.putBoolean("Valid LL target", true);
+      SmartDashboard.putNumber("FID", LimelightHelpers.getFiducialID("limelight-april"));
+    }
+    else {
+      SmartDashboard.putBoolean("Valid LL target", false);
+      SmartDashboard.putNumber("FID", 404);
+    }
     SmartDashboard.putBoolean("Beam Break", noteChecker.get());
-    SmartDashboard.putBoolean("Jerked Back", jerkedBack);
     SmartDashboard.putBoolean("Note Loaded", noteLoaded);
     SmartDashboard.putString("Intake Mode", mode.name());
   }

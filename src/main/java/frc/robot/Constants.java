@@ -24,9 +24,10 @@ public final class Constants {
     public static final int encoder = 0;
     public static final double pigeonOffset = 5;
 
-    public static final double intakeDegree = 91.0;
+    public static final double intakeDegree = 91.5;
     public static final double shooterDegree = 116.0; 
     public static final double ampDegree = 170.0;
+    public static final double haltDegree = 105.0;
 
     public static final double intakeSpeed = .5;
     public static final double shooterSpeed = .75;
@@ -36,6 +37,7 @@ public final class Constants {
 
     //intake PID
     public static final double intakeP = .125;
+    public static final double shooterP = .08;
 
 
     public static final class Swerve {
