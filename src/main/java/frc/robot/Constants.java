@@ -25,7 +25,7 @@ public final class Constants {
     public static final double pigeonOffset = 5;
 
     public static final double intakeDegree = 91.5;
-    public static final double shooterDegree = 116.0; 
+    public static final double shooterDegree = 127.5; 
     public static final double ampDegree = 170.0;
     public static final double haltDegree = 105.0;
 
@@ -36,7 +36,7 @@ public final class Constants {
     public static final double jerkBackTime = .1;
 
     //intake PID
-    public static final double intakeP = .125;
+    public static final double intakeP = .1;
     public static final double shooterP = .08;
 
 

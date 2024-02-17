@@ -81,6 +81,7 @@ public class Intake extends SubsystemBase {
           setIntakeMotor(true);
         }
         else {
+          setIntakeMode(IntakeMode.shooter);
           stopIntake();
         }
       }
@@ -156,7 +157,7 @@ public class Intake extends SubsystemBase {
     // Translation2d pose = LimelightHelpers.getBotPose3d_wpiBlue("limelight-april").toPose2d().getTranslation();
     // distance = pose.getDistance(id);
 
-    distance = (60-15.625)/ Math.tan(Math.toRadians(LimelightHelpers.getTY("limelight-april")+29));
+    distance = (57-16.5)/ Math.tan(Math.toRadians(LimelightHelpers.getTY("limelight-april")+29));
     SmartDashboard.putNumber("Encoder Value", getEncoder());
     SmartDashboard.putNumber("Distance", distance);
     if (LimelightHelpers.getTV("limelight-april")){
