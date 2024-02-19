@@ -51,11 +51,11 @@ public class Shoot extends Command {
 
     if (s_Intake.mode == IntakeMode.shooter){
       s_Intake.setShooter(Constants.shooterSpeed);
-      if(timer.get() > 1.0){
+      if(timer.get() > 1.5){
         s_Intake.setIntakeMotor(true);
       }
       // timeout  
-      else if (timer.get()> 2.0){
+      else if (timer.get()> 2.5){
         end = true;
       }
     }

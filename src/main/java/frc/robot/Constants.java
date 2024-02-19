@@ -36,7 +36,7 @@ public final class Constants {
     public static final double jerkBackTime = .1;
 
     //intake PID
-    public static final double intakeP = .1;
+    public static final double intakeP = .08;
     public static final double shooterP = .08;
 
 

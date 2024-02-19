@@ -21,7 +21,7 @@ public class FollowNote extends Command {
   DoubleSupplier translationValue;
   /** Creates a new FollowNote. */
   public FollowNote(Swerve s_Swerve, DoubleSupplier translationValue) {
-    controller = new PIDController(Constants.Swerve.angleKP, 0, 0);
+    controller = new PIDController(Constants.shooterP, 0, 0);
     offset = Constants.pigeonOffset;
     this.s_Swerve = s_Swerve;
     this.translationValue = translationValue;
@@ -36,14 +36,14 @@ public class FollowNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!LimelightHelpers.getTV("limelight")) {
+    if (!LimelightHelpers.getTV("limelight-ai")) {
       return;
     }
     controller.setTolerance(offset);
-    double rotationVal = controller.calculate(LimelightHelpers.getTX("limelight"), 0);
+    double rotationVal = controller.calculate(LimelightHelpers.getTX("limelight-ai"), 0);
     s_Swerve.drive(
             new Translation2d(translationValue.getAsDouble(), 0), 
-            rotationVal * Constants.Swerve.maxAngularVelocity,
+            rotationVal,
             false, 
             true
         );

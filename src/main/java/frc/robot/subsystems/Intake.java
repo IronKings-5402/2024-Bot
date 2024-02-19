@@ -35,6 +35,7 @@ public class Intake extends SubsystemBase {
   PIDController controller = new PIDController(Constants.intakeP, 0, 0);
   Swerve s_Swerve;
   double distance = 0;
+  double testSetpoint = 125;
   public enum IntakeMode {
     normal,
     shooter,
@@ -50,6 +51,8 @@ public class Intake extends SubsystemBase {
     intakeLiftRight.setNeutralMode(NeutralModeValue.Brake);
     intakeLiftRight.setInverted(false);
     intakeLiftLeft.setInverted(true);
+    SmartDashboard.putNumber("test setpoint", 125);
+
   }
 
   public double getEncoder(){
@@ -62,7 +65,7 @@ public class Intake extends SubsystemBase {
 
   public void goToSetpoint(double setpoint){
     double calculatedSpeed = controller.calculate(getEncoder(), setpoint);
-    calculatedSpeed = MathUtil.clamp(calculatedSpeed, -.20, .20);
+    calculatedSpeed = MathUtil.clamp(calculatedSpeed, -.35, .35);
     intakeLiftLeft.set(calculatedSpeed);
     intakeLiftRight.set(calculatedSpeed);
   }
@@ -91,7 +94,12 @@ public class Intake extends SubsystemBase {
     }
 
     else if (this.mode == IntakeMode.shooter){
-      setpoint = Constants.shooterDegree;
+      if (LimelightHelpers.getTV("limelight-april")){
+        setpoint = testSetpoint;
+      }
+      else {
+        setpoint = Constants.shooterDegree;
+      }
     }
 
     else if (this.mode == IntakeMode.amp){
@@ -156,7 +164,7 @@ public class Intake extends SubsystemBase {
     // Translation2d id = id3.get().toPose2d().getTranslation();
     // Translation2d pose = LimelightHelpers.getBotPose3d_wpiBlue("limelight-april").toPose2d().getTranslation();
     // distance = pose.getDistance(id);
-
+    
     distance = (57-16.5)/ Math.tan(Math.toRadians(LimelightHelpers.getTY("limelight-april")+29));
     SmartDashboard.putNumber("Encoder Value", getEncoder());
     SmartDashboard.putNumber("Distance", distance);
@@ -168,6 +176,8 @@ public class Intake extends SubsystemBase {
       SmartDashboard.putBoolean("Valid LL target", false);
       SmartDashboard.putNumber("FID", 404);
     }
+    testSetpoint = distance * 0.191 + 104;
+    SmartDashboard.putBoolean("AI target", LimelightHelpers.getTV("limelight-ai"));
     SmartDashboard.putBoolean("Beam Break", noteChecker.get());
     SmartDashboard.putBoolean("Note Loaded", noteLoaded);
     SmartDashboard.putString("Intake Mode", mode.name());
