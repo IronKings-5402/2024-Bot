@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -35,11 +36,11 @@ public class RobotContainer {
     private final JoystickButton bButton = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton shooter = new JoystickButton(operator, 1);
     private final JoystickButton rightBumper = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton topLeft = new JoystickButton(operator, 7);
-    private final JoystickButton topRight = new JoystickButton(operator, 8);
-    private final JoystickButton midLeft = new JoystickButton(operator, 9);
-    private final JoystickButton midRight = new JoystickButton(operator, 10);
-    private final JoystickButton bottomLeft = new JoystickButton(operator, 11);
+    private final JoystickButton bottomLeftJoystick = new JoystickButton(operator, 3);
+    private final JoystickButton topRightJoystick = new JoystickButton(operator, 6);
+    private final JoystickButton topLeftJoystick = new JoystickButton(operator, 5);
+    private final JoystickButton sideButton = new JoystickButton(operator, 2);
+    private final JoystickButton bottomRightJoystick = new JoystickButton(operator, 4);
     //private final JoystickButton midRight = new JoystickButton(operator, 10);
 
     /* Subsystems */
@@ -51,6 +52,8 @@ public class RobotContainer {
     Command shoot = new Shoot(s_Intake,s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis));
     Command autoShoot = new Shoot(s_Intake, s_Swerve, () -> 0, () -> 0).withTimeout(1);
     Command followNote = new FollowNote(s_Swerve, () -> -driver.getRawAxis(translationAxis));
+    Command followNoteAuto = new FollowNote(s_Swerve, () -> -.1).withTimeout(1);
+
     // autos 
     private String mainAuto = "MainAuto";
     private String backupAuto = "BackupAuto";
@@ -74,6 +77,8 @@ public class RobotContainer {
         // Configure the button bindings
         s_Intake.setDefaultCommand(new InstantCommand(() -> s_Intake.intake(), s_Intake));
         configureButtonBindings();
+        NamedCommands.registerCommand("shoot", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)).andThen(autoShoot));
+        NamedCommands.registerCommand("pickup", new InstantCommand(() -> s_Intake.toggleIntake(true)).andThen(followNoteAuto));
     }
 
     /**
@@ -90,12 +95,12 @@ public class RobotContainer {
         aButton.onFalse(new InstantCommand(() -> s_Climber.climberStop()));
         bButton.onFalse(new InstantCommand(() -> s_Climber.climberStop()));
 
-        topLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
-        midLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
-        bottomLeft.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.amp)));
-        topRight.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.halt)));
+        bottomLeftJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
+        topLeftJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
+        bottomRightJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.amp)));
+        topRightJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.halt)));
 
-        midRight.onTrue(new InstantCommand(() -> s_Intake.toggleIntake()));
+        sideButton.onTrue(new InstantCommand(() -> s_Intake.toggleIntake()));
         shooter.whileTrue(shoot.alongWith(new InstantCommand(() -> s_Intake.intake())));
         rightBumper.whileTrue(followNote);
         //rightBumper.onTrue(new InstantCommand(() -> s_Intake.))

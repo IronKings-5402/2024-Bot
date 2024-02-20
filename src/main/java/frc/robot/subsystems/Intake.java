@@ -166,19 +166,17 @@ public class Intake extends SubsystemBase {
     // distance = pose.getDistance(id);
     
     distance = (57-16.5)/ Math.tan(Math.toRadians(LimelightHelpers.getTY("limelight-april")+29));
-    SmartDashboard.putNumber("Encoder Value", getEncoder());
     SmartDashboard.putNumber("Distance", distance);
     if (LimelightHelpers.getTV("limelight-april")){
       SmartDashboard.putBoolean("Valid LL target", true);
       SmartDashboard.putNumber("FID", LimelightHelpers.getFiducialID("limelight-april"));
     }
     else {
-      SmartDashboard.putBoolean("Valid LL target", false);
+      SmartDashboard.putBoolean("Valid Apriltag target", false);
       SmartDashboard.putNumber("FID", 404);
     }
     testSetpoint = distance * 0.191 + 104;
     SmartDashboard.putBoolean("AI target", LimelightHelpers.getTV("limelight-ai"));
-    SmartDashboard.putBoolean("Beam Break", noteChecker.get());
     SmartDashboard.putBoolean("Note Loaded", noteLoaded);
     SmartDashboard.putString("Intake Mode", mode.name());
   }
