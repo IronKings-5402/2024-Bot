@@ -34,36 +34,37 @@ public class Shoot extends Command {
     addRequirements(this.s_Intake, this.s_Swerve);
     // Use addRequirements() here to declare subsystem dependencies.
   }
-
+  
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     timer.start();
   }
-
+  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     // if there is not a note or the IntakeMode is not shooter 
-    if (!((s_Intake.mode == IntakeMode.shooter) || (s_Intake.mode == IntakeMode.amp))){
+    double shootSpeed = 0;
+    if (s_Intake.mode == IntakeMode.amp){
+      shootSpeed = Constants.ampSpeed;
+    }
+    else {
+      shootSpeed = Constants.shooterSpeed;
+    }
+
+    s_Intake.setShooter(shootSpeed);
+
+    if (timer.get()> 2.5){
       end = true;
     }
 
-    if (s_Intake.mode == IntakeMode.shooter){
-      s_Intake.setShooter(Constants.shooterSpeed);
-      if(timer.get() > 1.5){
-        s_Intake.setIntakeMotor(true);
-      }
-      // timeout  
-      else if (timer.get()> 2.5){
-        end = true;
-      }
-    }
-
-    else if (s_Intake.mode == IntakeMode.amp){
+    else if(timer.get() > 1.5){
       s_Intake.setIntakeMotor(true);
     }
-
+    // timeout  
+    
+    
     double rotationVal = 0;
     if (LimelightHelpers.getTV("limelight-april")){
       rotationVal = controller.calculate(LimelightHelpers.getTX("limelight-april"), 0);
@@ -71,13 +72,13 @@ public class Shoot extends Command {
     double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), Constants.stickDeadband);
     double strafeVal = MathUtil.applyDeadband(strafe.getAsDouble(), Constants.stickDeadband);
     s_Swerve.drive(
-            new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
-            rotationVal, 
-            true, 
-            true
-        );
+    new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
+    rotationVal, 
+    true, 
+    true
+    );
   }
-
+  
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
@@ -88,7 +89,7 @@ public class Shoot extends Command {
     s_Intake.stopIntake();
     end = false;
   }
-
+  
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {

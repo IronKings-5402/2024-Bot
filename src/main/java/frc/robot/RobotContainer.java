@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -41,6 +42,7 @@ public class RobotContainer {
     private final JoystickButton topLeftJoystick = new JoystickButton(operator, 5);
     private final JoystickButton sideButton = new JoystickButton(operator, 2);
     private final JoystickButton bottomRightJoystick = new JoystickButton(operator, 4);
+    private final JoystickButton button7 = new JoystickButton(operator, 7);
     //private final JoystickButton midRight = new JoystickButton(operator, 10);
 
     /* Subsystems */
@@ -50,12 +52,10 @@ public class RobotContainer {
 
     // commands 
     Command shoot = new Shoot(s_Intake,s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis));
-    Command autoShoot = new Shoot(s_Intake, s_Swerve, () -> 0, () -> 0).withTimeout(1);
-    Command followNote = new FollowNote(s_Swerve, () -> -driver.getRawAxis(translationAxis));
-    Command followNoteAuto = new FollowNote(s_Swerve, () -> -.1).withTimeout(1);
-
+    Command followNote = new FollowNote(s_Swerve, s_Intake,() -> -driver.getRawAxis(translationAxis));
+    SequentialCommandGroup autoAmp = new SequentialCommandGroup();
     // autos 
-    private String mainAuto = "MainAuto";
+    private String mainAuto = "Main";
     private String backupAuto = "BackupAuto";
 
     SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -75,10 +75,16 @@ public class RobotContainer {
         m_chooser.addOption("Backup Auto", backupAuto);
         SmartDashboard.putData(m_chooser);
         // Configure the button bindings
-        s_Intake.setDefaultCommand(new InstantCommand(() -> s_Intake.intake(), s_Intake));
+        //s_Intake.setDefaultCommand(new InstantCommand(() -> s_Intake.intake(), s_Intake));
         configureButtonBindings();
-        NamedCommands.registerCommand("shoot", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)).andThen(autoShoot));
-        NamedCommands.registerCommand("pickup", new InstantCommand(() -> s_Intake.toggleIntake(true)).andThen(followNoteAuto));
+        autoAmp.addCommands(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.amp)));
+        autoAmp.addCommands(new Shoot(s_Intake, s_Swerve, () -> 0, () -> 0));
+        autoAmp.addCommands(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)) );
+        NamedCommands.registerCommand("shooterMode", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
+        NamedCommands.registerCommand("intakeMode", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
+
+        NamedCommands.registerCommand("shoot", new Shoot(s_Intake, s_Swerve, () -> 0, () -> 0));
+        NamedCommands.registerCommand("pickup", new FollowNote(s_Swerve, s_Intake,() -> -1).withTimeout(1.2));
     }
 
     /**
@@ -101,8 +107,9 @@ public class RobotContainer {
         topRightJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.halt)));
 
         sideButton.onTrue(new InstantCommand(() -> s_Intake.toggleIntake()));
-        shooter.whileTrue(shoot.alongWith(new InstantCommand(() -> s_Intake.intake())));
+        shooter.whileTrue(shoot);
         rightBumper.whileTrue(followNote);
+        button7.onTrue(autoAmp);
         //rightBumper.onTrue(new InstantCommand(() -> s_Intake.))
     }
 

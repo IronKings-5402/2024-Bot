@@ -35,7 +35,8 @@ public class Intake extends SubsystemBase {
   PIDController controller = new PIDController(Constants.intakeP, 0, 0);
   Swerve s_Swerve;
   double distance = 0;
-  double testSetpoint = 125;
+  double calcSetpoint = 125;
+  double currentSetpoint = Constants.shooterDegree;
   public enum IntakeMode {
     normal,
     shooter,
@@ -76,7 +77,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void intake(){
-    double setpoint = Constants.intakeDegree;
+    double setpoint = currentSetpoint;
     if (this.mode == IntakeMode.normal) {
       setpoint = Constants.intakeDegree;
       if (intakeOn){
@@ -95,9 +96,10 @@ public class Intake extends SubsystemBase {
 
     else if (this.mode == IntakeMode.shooter){
       if (LimelightHelpers.getTV("limelight-april")){
-        setpoint = testSetpoint;
+        //setpoint = calcSetpoint;
+        setpoint = calcSetpoint;
       }
-      else {
+      else if (currentSetpoint < 100 || currentSetpoint > 175){
         setpoint = Constants.shooterDegree;
       }
     }
@@ -112,6 +114,7 @@ public class Intake extends SubsystemBase {
     }
 
     goToSetpoint(setpoint);
+    currentSetpoint = setpoint;
   }
 
   public void toggleIntake(){
@@ -151,6 +154,7 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
+    intake();
     if (!noteChecker.get()){
       noteLoaded = true;
     }
@@ -168,14 +172,14 @@ public class Intake extends SubsystemBase {
     distance = (57-16.5)/ Math.tan(Math.toRadians(LimelightHelpers.getTY("limelight-april")+29));
     SmartDashboard.putNumber("Distance", distance);
     if (LimelightHelpers.getTV("limelight-april")){
-      SmartDashboard.putBoolean("Valid LL target", true);
+      SmartDashboard.putBoolean("Valid Apriltag target", true);
       SmartDashboard.putNumber("FID", LimelightHelpers.getFiducialID("limelight-april"));
     }
     else {
       SmartDashboard.putBoolean("Valid Apriltag target", false);
       SmartDashboard.putNumber("FID", 404);
     }
-    testSetpoint = distance * 0.191 + 104;
+    calcSetpoint = distance * 0.191 + 104;
     SmartDashboard.putBoolean("AI target", LimelightHelpers.getTV("limelight-ai"));
     SmartDashboard.putBoolean("Note Loaded", noteLoaded);
     SmartDashboard.putString("Intake Mode", mode.name());
