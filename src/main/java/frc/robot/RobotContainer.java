@@ -82,7 +82,7 @@ public class RobotContainer {
         autoAmp.addCommands(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)) );
         NamedCommands.registerCommand("shooterMode", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
         NamedCommands.registerCommand("intakeMode", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
-
+        NamedCommands.registerCommand("intakeOn", new InstantCommand(() -> s_Intake.toggleIntake(true)));
         NamedCommands.registerCommand("shoot", new Shoot(s_Intake, s_Swerve, () -> 0, () -> 0));
         NamedCommands.registerCommand("pickup", new FollowNote(s_Swerve, s_Intake,() -> -1).withTimeout(1.2));
     }

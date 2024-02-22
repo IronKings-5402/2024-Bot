@@ -52,6 +52,8 @@ public class Intake extends SubsystemBase {
     intakeLiftRight.setNeutralMode(NeutralModeValue.Brake);
     intakeLiftRight.setInverted(false);
     intakeLiftLeft.setInverted(true);
+    leftShooter.setNeutralMode(NeutralModeValue.Brake);
+    rightShooter.setNeutralMode(NeutralModeValue.Brake);
     SmartDashboard.putNumber("test setpoint", 125);
 
   }

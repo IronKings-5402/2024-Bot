@@ -29,7 +29,7 @@ public final class Constants {
     public static final double ampDegree = 185.0;
     public static final double haltDegree = 105.0;
 
-    public static final double intakeSpeed = .7;
+    public static final double intakeSpeed = .6;
     public static final double shooterSpeed = .75;
     public static final double intakeMaxSpeed = .35;
     public static final int lightSensorID = 1;

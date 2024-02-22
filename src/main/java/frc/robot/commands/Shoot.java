@@ -84,7 +84,7 @@ public class Shoot extends Command {
   public void end(boolean interrupted) {
     timer.stop();
     timer.reset();
-    s_Intake.toggleIntake(false);
+    //s_Intake.toggleIntake(false);
     s_Intake.setShooter(0);
     s_Intake.stopIntake();
     end = false;

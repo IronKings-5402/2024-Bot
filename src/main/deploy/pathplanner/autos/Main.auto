@@ -30,15 +30,21 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Phase 2"
+            "name": "intakeOn"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "pickup"
+            "waitTime": 1.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Phase 2"
           }
         },
         {
@@ -66,15 +72,15 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Phase 4"
+            "name": "intakeOn"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "pickup"
+            "pathName": "Phase 4"
           }
         },
         {
