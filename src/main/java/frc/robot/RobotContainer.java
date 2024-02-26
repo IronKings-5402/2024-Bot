@@ -46,6 +46,7 @@ public class RobotContainer {
     private final JoystickButton button7 = new JoystickButton(operator, 7);
     private final JoystickButton xButton = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton button11 = new JoystickButton(operator, 11);
 
     //private final JoystickButton midRight = new JoystickButton(operator, 10);
 
@@ -89,6 +90,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("intakeOn", new InstantCommand(() -> s_Intake.toggleIntake(true)));
         NamedCommands.registerCommand("shoot", new Shoot(s_Intake, s_Swerve, () -> 0, () -> 0));
         NamedCommands.registerCommand("pickup", new FollowNote(s_Swerve, s_Intake,() -> -1).withTimeout(.8));
+        NamedCommands.registerCommand("shooterOff", new InstantCommand(() -> s_Intake.setShooter(0)));
     }
 
     /**

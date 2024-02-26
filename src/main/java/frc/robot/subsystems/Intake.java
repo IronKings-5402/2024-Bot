@@ -37,6 +37,7 @@ public class Intake extends SubsystemBase {
   double distance = 0;
   double calcSetpoint = 125;
   double currentSetpoint = Constants.shooterDegree;
+  boolean manual = false;
   public enum IntakeMode {
     normal,
     shooter,
@@ -79,6 +80,9 @@ public class Intake extends SubsystemBase {
   }
 
   public void intake(){
+    if (manual){
+      return;
+    }
     double setpoint = currentSetpoint;
     if (this.mode == IntakeMode.normal) {
       setpoint = Constants.intakeDegree;
@@ -151,6 +155,10 @@ public class Intake extends SubsystemBase {
 
   public void stopIntake(){
     intake.set(ControlMode.PercentOutput ,0);
+  }
+
+  public void setManual(boolean manual){
+    this.manual = manual;
   }
 
 
