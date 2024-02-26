@@ -57,10 +57,10 @@ public class Shoot extends Command {
     s_Intake.setShooter(shootSpeed);
 
     if (DriverStation.isAutonomous()){
-      if (timer.get()> 1){
+      if (timer.get()> 1.25){
       end = true;
       }
-      else if (timer.get() > .5)
+      else if (timer.get() > 1)
       s_Intake.setIntakeMotor(true);
     }
 

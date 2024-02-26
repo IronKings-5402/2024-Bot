@@ -106,30 +106,6 @@
           "data": {
             "name": "intakeOn"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Phase 6"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pickup"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterMode"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
         }
       ]
     }
