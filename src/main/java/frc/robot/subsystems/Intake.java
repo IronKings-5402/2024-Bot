@@ -91,7 +91,7 @@ public class Intake extends SubsystemBase {
           setIntakeMotor(true);
         }
         else {
-          setIntakeMode(IntakeMode.shooter);
+          setIntakeMode(IntakeMode.halt);
           stopIntake();
         }
       }

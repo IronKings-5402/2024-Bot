@@ -52,6 +52,7 @@ public class Shoot extends Command {
     }
     else {
       shootSpeed = Constants.shooterSpeed;
+      s_Intake.setIntakeMode(IntakeMode.shooter);
     }
 
     s_Intake.setShooter(shootSpeed);
@@ -68,9 +69,11 @@ public class Shoot extends Command {
       if (timer.get()> 2.5){
         end = true;
       }
-
-      else if(timer.get() > 1.5){
+    else if(timer.get() > 2.3 && s_Intake.mode == IntakeMode.amp){
         s_Intake.setIntakeMotor(true);
+      }
+    else if(timer.get() > 1.5){
+      s_Intake.setIntakeMotor(true);
       }
     }
 
