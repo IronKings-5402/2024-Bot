@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Climber.ClimberSide;
 import frc.robot.subsystems.Intake.IntakeMode;
 
 /**
@@ -43,6 +44,9 @@ public class RobotContainer {
     private final JoystickButton sideButton = new JoystickButton(operator, 2);
     private final JoystickButton bottomRightJoystick = new JoystickButton(operator, 4);
     private final JoystickButton button7 = new JoystickButton(operator, 7);
+    private final JoystickButton xButton = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
+
     //private final JoystickButton midRight = new JoystickButton(operator, 10);
 
     /* Subsystems */
@@ -78,13 +82,13 @@ public class RobotContainer {
         //s_Intake.setDefaultCommand(new InstantCommand(() -> s_Intake.intake(), s_Intake));
         configureButtonBindings();
         autoAmp.addCommands(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.amp)));
-        autoAmp.addCommands(new Shoot(s_Intake, s_Swerve, () -> 0, () -> 0));
+        autoAmp.addCommands(new Shoot(s_Intake, s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> driver.getRawAxis(strafeAxis)));
         autoAmp.addCommands(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)) );
         NamedCommands.registerCommand("shooterMode", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
         NamedCommands.registerCommand("intakeMode", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
         NamedCommands.registerCommand("intakeOn", new InstantCommand(() -> s_Intake.toggleIntake(true)));
         NamedCommands.registerCommand("shoot", new Shoot(s_Intake, s_Swerve, () -> 0, () -> 0));
-        NamedCommands.registerCommand("pickup", new FollowNote(s_Swerve, s_Intake,() -> -1).withTimeout(1.2));
+        NamedCommands.registerCommand("pickup", new FollowNote(s_Swerve, s_Intake,() -> -1).withTimeout(.8));
     }
 
     /**
@@ -96,10 +100,17 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        aButton.onTrue(new InstantCommand(() -> s_Climber.climberUp()));
-        bButton.onTrue(new InstantCommand(() -> s_Climber.climberDown()));
-        aButton.onFalse(new InstantCommand(() -> s_Climber.climberStop()));
-        bButton.onFalse(new InstantCommand(() -> s_Climber.climberStop()));
+
+        aButton.whileTrue(new InstantCommand(() -> s_Climber.climberSet(ClimberSide.left, false)));
+        bButton.whileTrue(new InstantCommand(() -> s_Climber.climberSet(ClimberSide.right, false)));
+        xButton.whileTrue(new InstantCommand(() -> s_Climber.climberSet(ClimberSide.left, true)));
+        yButton.whileTrue(new InstantCommand(() -> s_Climber.climberSet(ClimberSide.right, true)));
+
+        aButton.onFalse(new InstantCommand(() -> s_Climber.climberStop(ClimberSide.left)));
+        bButton.onFalse(new InstantCommand(() -> s_Climber.climberStop(ClimberSide.right)));
+        xButton.onFalse(new InstantCommand(() -> s_Climber.climberStop(ClimberSide.left)));
+        yButton.onFalse(new InstantCommand(() -> s_Climber.climberStop(ClimberSide.right)));
+
 
         bottomLeftJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
         topLeftJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
@@ -120,6 +131,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new PathPlannerAuto(m_chooser.getSelected());
+        //return new PathPlannerAuto(m_chooser.getSelected());
+        return new InstantCommand(() -> s_Intake.setShooter(Constants.shooterSpeed)).andThen(new PathPlannerAuto(m_chooser.getSelected()));
     }
 }

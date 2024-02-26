@@ -58,7 +58,7 @@ public class FollowNote extends Command {
   @Override
   public void end(boolean interrupted) {
     s_Intake.toggleIntake(false);
-    s_Intake.setShooter(0);
+    //s_Intake.setShooter(0);
   }
 
   // Returns true when the command should end.

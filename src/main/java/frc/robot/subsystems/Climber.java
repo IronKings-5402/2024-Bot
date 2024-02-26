@@ -5,28 +5,36 @@
 package frc.robot.subsystems;
 
 
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 public class Climber extends SubsystemBase {
-  //CANSparkMax leftClimber = new CANSparkMax(Constants.leftClimberId, MotorType.kBrushless);
-  //CANSparkMax rightClimber = new CANSparkMax(Constants.rightClimberId, MotorType.kBrushless);
+  PWMSparkMax leftClimber = new PWMSparkMax(0);
+  PWMSparkMax rightClimber = new PWMSparkMax(1);
+  
   /** Creates a new Climber. */
   public Climber() {
-    //this.rightClimber.setInverted(true);
   }
-
-  public void climberUp(){
-  //  leftClimber.set(.5);
-  //  rightClimber.set(.5);
+  public enum ClimberSide {left, right};
+  public void climberSet(ClimberSide side, boolean reverse){
+    double speed = Constants.climberSpeed;
+    if (reverse){
+      speed = -speed;
+    } 
+    if (side == ClimberSide.left){
+      leftClimber.set(speed);
+    }
+    else if(side == ClimberSide.right){
+      rightClimber.set(speed);
+    }
   }
-
-  public void climberDown(){
-  //  leftClimber.set(-.5);
- //   rightClimber.set(-.5);
-  }
-
-  public void climberStop(){
-  //  leftClimber.set(0);
-  //  rightClimber.set(0);
+  public void climberStop(ClimberSide side){
+    if (side == ClimberSide.left){
+      leftClimber.set(0);
+    }
+    else if (side == ClimberSide.right){
+      rightClimber.set(0);
+    }
   }
 
   @Override

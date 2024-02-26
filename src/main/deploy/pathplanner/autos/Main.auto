@@ -90,12 +90,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Phase 5"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "shoot"
@@ -129,12 +123,6 @@
           "type": "named",
           "data": {
             "name": "shooterMode"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Phase 7"
           }
         },
         {

@@ -26,9 +26,10 @@ public final class Constants {
 
     public static final double intakeDegree = 92.1;
     public static final double shooterDegree = 127.5; 
-    public static final double ampDegree = 185.0;
+    public static final double ampDegree = 190.0;
     public static final double haltDegree = 105.0;
 
+    public static final double climberSpeed = .75;
     public static final double intakeSpeed = .6;
     public static final double shooterSpeed = .75;
     public static final double intakeMaxSpeed = .35;

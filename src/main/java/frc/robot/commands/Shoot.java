@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -55,13 +56,25 @@ public class Shoot extends Command {
 
     s_Intake.setShooter(shootSpeed);
 
-    if (timer.get()> 2.5){
+    if (DriverStation.isAutonomous()){
+      if (timer.get()> 1){
       end = true;
-    }
-
-    else if(timer.get() > 1.5){
+      }
+      else if (timer.get() > .5)
       s_Intake.setIntakeMotor(true);
     }
+
+    else {
+      if (timer.get()> 2.5){
+        end = true;
+      }
+
+      else if(timer.get() > 1.5){
+        s_Intake.setIntakeMotor(true);
+      }
+    }
+
+    
     // timeout  
     
     
@@ -85,7 +98,9 @@ public class Shoot extends Command {
     timer.stop();
     timer.reset();
     //s_Intake.toggleIntake(false);
-    s_Intake.setShooter(0);
+    if (!DriverStation.isAutonomous()){
+          s_Intake.setShooter(0);
+    }
     s_Intake.stopIntake();
     end = false;
   }
