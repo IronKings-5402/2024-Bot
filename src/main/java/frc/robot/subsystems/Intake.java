@@ -14,6 +14,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -79,8 +80,19 @@ public class Intake extends SubsystemBase {
     rightShooter.set(speed);
   }
 
+  public void manualLift(double speed){
+    intakeLiftLeft.set(speed);
+    intakeLiftRight.set(speed);
+  }
+
   public void intake(){
     if (manual){
+      if (intakeOn){
+        setIntakeMotor(true);
+      }
+      else {
+        stopIntake();
+      }
       return;
     }
     double setpoint = currentSetpoint;
@@ -133,6 +145,10 @@ public class Intake extends SubsystemBase {
 
   public void setIntakeMode(IntakeMode mode) {
     this.mode = mode;
+  }
+
+  public void toggleManual() {
+    this.manual = !manual;
   }
 
   public void setIntakeMotor(boolean reverse){
@@ -193,5 +209,11 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putBoolean("AI target", LimelightHelpers.getTV("limelight-ai"));
     SmartDashboard.putBoolean("Note Loaded", noteLoaded);
     SmartDashboard.putString("Intake Mode", mode.name());
+    if (mode == IntakeMode.halt){
+      SmartDashboard.putBoolean("Can Drive Under", true);
+    }
+    else {
+      SmartDashboard.putBoolean("Can Drive Under", false);
+    }
   }
 }

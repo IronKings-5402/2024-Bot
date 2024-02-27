@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Climber.ClimberSide;
@@ -46,8 +47,11 @@ public class RobotContainer {
     private final JoystickButton button7 = new JoystickButton(operator, 7);
     private final JoystickButton xButton = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton button11 = new JoystickButton(operator, 11);
+    private final JoystickButton startButton = new JoystickButton(driver, XboxController.Button.kStart.value);
 
+    private final JoystickButton button11 = new JoystickButton(operator, 11);
+    private final POVButton up = new POVButton(operator, 0);
+    private final POVButton down = new POVButton(operator, 180);
     //private final JoystickButton midRight = new JoystickButton(operator, 10);
 
     /* Subsystems */
@@ -61,7 +65,7 @@ public class RobotContainer {
     SequentialCommandGroup autoAmp = new SequentialCommandGroup();
     // autos 
     private String mainAuto = "Main";
-    private String backupAuto = "BackupAuto";
+    private String backupAuto = "ShootAndGo";
 
     SendableChooser<String> m_chooser = new SendableChooser<>();
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -83,7 +87,7 @@ public class RobotContainer {
         //s_Intake.setDefaultCommand(new InstantCommand(() -> s_Intake.intake(), s_Intake));
         configureButtonBindings();
         autoAmp.addCommands(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.amp)));
-        autoAmp.addCommands(new Shoot(s_Intake, s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> driver.getRawAxis(strafeAxis)));
+        autoAmp.addCommands(new Shoot(s_Intake, s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis)));
         autoAmp.addCommands(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)) );
         NamedCommands.registerCommand("shooterMode", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
         NamedCommands.registerCommand("intakeMode", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
@@ -123,6 +127,14 @@ public class RobotContainer {
         shooter.whileTrue(shoot);
         rightBumper.whileTrue(followNote);
         button7.onTrue(autoAmp);
+        up.whileTrue(new InstantCommand(() -> s_Intake.manualLift(.3)));
+        down.whileTrue(new InstantCommand(() -> s_Intake.manualLift(-.3)));
+
+        up.onFalse(new InstantCommand(() -> s_Intake.manualLift(0)));
+        down.onFalse(new InstantCommand(() -> s_Intake.manualLift(0)));
+
+        startButton.onTrue(new InstantCommand(() -> s_Intake.toggleManual()));
+
         //rightBumper.onTrue(new InstantCommand(() -> s_Intake.))
     }
 

@@ -66,13 +66,16 @@ public class Shoot extends Command {
     }
 
     else {
-      if (timer.get()> 2.5){
+      if (timer.get() > 3 && s_Intake.mode == IntakeMode.amp){
         end = true;
       }
-    else if(timer.get() > 2.3 && s_Intake.mode == IntakeMode.amp){
+      else if(timer.get() > 2.7 && s_Intake.mode == IntakeMode.amp){
         s_Intake.setIntakeMotor(true);
       }
-    else if(timer.get() > 1.5){
+      else if (timer.get()> 2.5){
+        end = true;
+      }
+      else if(timer.get() > 1.5){
       s_Intake.setIntakeMotor(true);
       }
     }

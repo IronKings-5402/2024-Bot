@@ -1,0 +1,73 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shootAndGo1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterMode"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shootAndGo2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeMode"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterMode"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shootAndGo3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeMode"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
