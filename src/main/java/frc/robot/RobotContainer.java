@@ -33,7 +33,7 @@ public class RobotContainer {
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kBack.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton aButton = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton bButton = new JoystickButton(driver, XboxController.Button.kB.value);
@@ -146,6 +146,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
         //return new PathPlannerAuto(m_chooser.getSelected());
-        return new InstantCommand(() -> s_Intake.setShooter(Constants.shooterSpeed)).andThen(new PathPlannerAuto(m_chooser.getSelected()));
+        return new InstantCommand(() -> s_Intake.setShooter(Constants.shooterSpeed)).andThen(new PathPlannerAuto(m_chooser.getSelected())).finallyDo(() -> s_Intake.setShooter(0));
     }
 }
