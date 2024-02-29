@@ -1,0 +1,151 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.6470138128111684,
+      "y": 7.240041385270605
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Phase 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeMode"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Phase 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterMode"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Phase 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeMode"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeOn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Phase 4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterMode"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeMode"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Phase 5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Phase 6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterMode"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeMode"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterOff"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

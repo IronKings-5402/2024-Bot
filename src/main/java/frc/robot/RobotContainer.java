@@ -49,7 +49,6 @@ public class RobotContainer {
     private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton startButton = new JoystickButton(driver, XboxController.Button.kStart.value);
 
-    private final JoystickButton button11 = new JoystickButton(operator, 11);
     private final POVButton up = new POVButton(operator, 0);
     private final POVButton down = new POVButton(operator, 180);
     //private final JoystickButton midRight = new JoystickButton(operator, 10);
@@ -65,6 +64,7 @@ public class RobotContainer {
     SequentialCommandGroup autoAmp = new SequentialCommandGroup();
     // autos 
     private String mainAuto = "Main";
+    private String mainAuto2 = "Main2";
     private String backupAuto = "ShootAndGo";
 
     SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -80,7 +80,7 @@ public class RobotContainer {
             )
         );
 
-        m_chooser.setDefaultOption("Main Auto", mainAuto);
+        m_chooser.setDefaultOption("Main Auto", mainAuto2);
         m_chooser.addOption("Backup Auto", backupAuto);
         SmartDashboard.putData(m_chooser);
         // Configure the button bindings
@@ -93,7 +93,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("intakeMode", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
         NamedCommands.registerCommand("intakeOn", new InstantCommand(() -> s_Intake.toggleIntake(true)));
         NamedCommands.registerCommand("shoot", new Shoot(s_Intake, s_Swerve, () -> 0, () -> 0));
-        NamedCommands.registerCommand("pickup", new FollowNote(s_Swerve, s_Intake,() -> -1).withTimeout(.8));
+        NamedCommands.registerCommand("pickup", new FollowNote(s_Swerve, s_Intake,() -> -2).withTimeout(.5));
         NamedCommands.registerCommand("shooterOff", new InstantCommand(() -> s_Intake.setShooter(0)));
     }
 
@@ -123,7 +123,7 @@ public class RobotContainer {
         bottomRightJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.amp)));
         topRightJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.halt)));
 
-        sideButton.onTrue(new InstantCommand(() -> s_Intake.toggleIntake()));
+        sideButton.onTrue(new InstantCommand(() -> s_Intake.toggleIntake(() -> rightBumper.getAsBoolean())));
         shooter.whileTrue(shoot);
         rightBumper.whileTrue(followNote);
         button7.onTrue(autoAmp);

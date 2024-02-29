@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -14,7 +16,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -33,7 +34,7 @@ public class Intake extends SubsystemBase {
   boolean noteLoaded = false;
   boolean intakeOn = false;
   AbsoluteEncoder liftEncoder;
-  PIDController controller = new PIDController(Constants.intakeP, 0, 0);
+  PIDController controller = new PIDController(Constants.intakeP, 0, Constants.intakeD);
   Swerve s_Swerve;
   double distance = 0;
   double calcSetpoint = 125;
@@ -70,7 +71,7 @@ public class Intake extends SubsystemBase {
 
   public void goToSetpoint(double setpoint){
     double calculatedSpeed = controller.calculate(getEncoder(), setpoint);
-    calculatedSpeed = MathUtil.clamp(calculatedSpeed, -.35, .35);
+    calculatedSpeed = MathUtil.clamp(calculatedSpeed, -Constants.intakeMaxSpeed, Constants.intakeMaxSpeed);
     intakeLiftLeft.set(calculatedSpeed);
     intakeLiftRight.set(calculatedSpeed);
   }
@@ -135,7 +136,10 @@ public class Intake extends SubsystemBase {
     currentSetpoint = setpoint;
   }
 
-  public void toggleIntake(){
+  public void toggleIntake(BooleanSupplier followingNote){
+    if (followingNote.getAsBoolean()){
+      return;
+    }
     intakeOn = !intakeOn;
   }
 
@@ -206,6 +210,7 @@ public class Intake extends SubsystemBase {
       SmartDashboard.putNumber("FID", 404);
     }
     calcSetpoint = distance * 0.191 + 104;
+    //calcSetpoint = distance *.845+29.2;
     SmartDashboard.putBoolean("AI target", LimelightHelpers.getTV("limelight-ai"));
     SmartDashboard.putBoolean("Note Loaded", noteLoaded);
     SmartDashboard.putString("Intake Mode", mode.name());
