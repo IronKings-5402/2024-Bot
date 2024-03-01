@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -41,6 +42,9 @@ public class FollowNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (s_Intake.getNote() && DriverStation.isAutonomous()){
+      s_Intake.stopIntake();
+    }
     if (!LimelightHelpers.getTV("limelight-ai")) {
       return;
     }
@@ -57,7 +61,7 @@ public class FollowNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_Intake.toggleIntake(false);
+    //s_Intake.toggleIntake(false);
     //s_Intake.setShooter(0);
   }
 

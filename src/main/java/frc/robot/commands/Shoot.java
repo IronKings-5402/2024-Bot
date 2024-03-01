@@ -57,27 +57,17 @@ public class Shoot extends Command {
 
     s_Intake.setShooter(shootSpeed);
 
-    if (DriverStation.isAutonomous()){
-      if (timer.get()> 1.25){
+    if (timer.get() > 3 && s_Intake.mode == IntakeMode.amp){
       end = true;
-      }
-      else if (timer.get() > 1)
-      s_Intake.setIntakeMotor(true);
     }
-
-    else {
-      if (timer.get() > 3 && s_Intake.mode == IntakeMode.amp){
-        end = true;
-      }
-      else if(timer.get() > 2.82 && s_Intake.mode == IntakeMode.amp){
-        s_Intake.setIntakeMotor(true, .4);
-      }
-      else if (timer.get()> 2.5){
-        end = true;
-      }
-      else if(timer.get() > 1.5){
+    else if(timer.get() > 2.82 && s_Intake.mode == IntakeMode.amp){
+      s_Intake.setIntakeMotor(true, .4);
+    }
+    else if (timer.get()> 2.5){
+      end = true;
+    }
+    else if(timer.get() > 1.5){
       s_Intake.setIntakeMotor(true);
-      }
     }
 
     
@@ -103,10 +93,8 @@ public class Shoot extends Command {
   public void end(boolean interrupted) {
     timer.stop();
     timer.reset();
-    //s_Intake.toggleIntake(false);
-    if (!DriverStation.isAutonomous()){
-          s_Intake.setShooter(0);
-    }
+    s_Intake.toggleIntake(false);
+    s_Intake.setShooter(0);
     s_Intake.stopIntake();
     end = false;
   }

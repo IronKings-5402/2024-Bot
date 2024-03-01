@@ -64,7 +64,7 @@ public class RobotContainer {
     SequentialCommandGroup autoAmp = new SequentialCommandGroup();
     // autos 
     private String mainAuto = "Main";
-    private String mainAuto2 = "Main2";
+    private String backupAuto2 = "Backup2";
     private String backupAuto = "ShootAndGo";
 
     SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -80,8 +80,9 @@ public class RobotContainer {
             )
         );
 
-        m_chooser.setDefaultOption("Main Auto", mainAuto2);
+        m_chooser.setDefaultOption("Main Auto", mainAuto);
         m_chooser.addOption("Backup Auto", backupAuto);
+        m_chooser.addOption("Backup Auto 2", backupAuto2);
         SmartDashboard.putData(m_chooser);
         // Configure the button bindings
         //s_Intake.setDefaultCommand(new InstantCommand(() -> s_Intake.intake(), s_Intake));
@@ -146,6 +147,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
         //return new PathPlannerAuto(m_chooser.getSelected());
-        return new InstantCommand(() -> s_Intake.setShooter(Constants.shooterSpeed)).andThen(new PathPlannerAuto(m_chooser.getSelected())).finallyDo(() -> s_Intake.setShooter(0));
+        return new PathPlannerAuto(m_chooser.getSelected()).finallyDo(() -> s_Swerve.gyro.setYaw(0));
     }
 }
