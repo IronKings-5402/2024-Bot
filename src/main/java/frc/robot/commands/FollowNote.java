@@ -51,7 +51,7 @@ public class FollowNote extends Command {
     //controller.setTolerance(offset);
     double rotationVal = controller.calculate(LimelightHelpers.getTX("limelight-ai"), 0);
     s_Swerve.drive(
-            new Translation2d(translationValue.getAsDouble(), 0), 
+            new Translation2d(-translationValue.getAsDouble(), 0), 
             rotationVal,
             false, 
             true
