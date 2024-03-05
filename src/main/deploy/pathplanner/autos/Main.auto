@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "shoot"
@@ -66,9 +72,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Phase 3"
+            "waitTime": 0.2
           }
         },
         {
@@ -84,9 +90,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Phase 4"
+            "waitTime": 0.15
           }
         },
         {
@@ -110,7 +116,7 @@
         {
           "type": "named",
           "data": {
-            "name": "pickup"
+            "name": "pickupSlow"
           }
         },
         {

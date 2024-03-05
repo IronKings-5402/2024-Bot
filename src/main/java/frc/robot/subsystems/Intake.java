@@ -209,8 +209,20 @@ public class Intake extends SubsystemBase {
       SmartDashboard.putBoolean("Valid Apriltag target", false);
       SmartDashboard.putNumber("FID", 404);
     }
-    //calcSetpoint = distance * 0.194 + 106;
-      calcSetpoint = distance * 0.194 + 104;
+    //calcSetpoint = distance * 0.194 + 104;
+    if (distance < 100){
+      calcSetpoint = distance * 0.197 + 106;
+    }
+    else if (distance < 120 && distance > 100) {
+      calcSetpoint = distance * 0.215 + 105;
+    }
+    else if (distance < 130 && distance > 120){
+      calcSetpoint = distance * 0.215 + 103;
+    }
+    else {
+      calcSetpoint = distance * 0.215 + 100;
+    }
+    //calcSetpoint = distance * 0.195 + 105;
     //calcSetpoint = distance *.845+29.2;
     SmartDashboard.putBoolean("AI target", LimelightHelpers.getTV("limelight-ai"));
     SmartDashboard.putBoolean("Note Loaded", noteLoaded);

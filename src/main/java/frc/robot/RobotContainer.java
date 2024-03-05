@@ -94,7 +94,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("intakeMode", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
         NamedCommands.registerCommand("intakeOn", new InstantCommand(() -> s_Intake.toggleIntake(true)));
         NamedCommands.registerCommand("shoot", new Shoot(s_Intake, s_Swerve, () -> 0, () -> 0));
-        NamedCommands.registerCommand("pickup", new FollowNote(s_Swerve, s_Intake,() -> -2).withTimeout(.5));
+        NamedCommands.registerCommand("pickup", new FollowNote(s_Swerve, s_Intake,() -> -1).withTimeout(.7));
+        NamedCommands.registerCommand("pickupSlow", new FollowNote(s_Swerve, s_Intake,() -> -.65).withTimeout(.85));
+
         NamedCommands.registerCommand("shooterOff", new InstantCommand(() -> s_Intake.setShooter(0)));
     }
 
