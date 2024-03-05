@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.6470138128111684,
-      "y": 7.240041385270605
+      "x": 1.5295283542266556,
+      "y": 6.300157716594503
     },
     "rotation": 0
   },
@@ -11,12 +11,6 @@
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Phase 1"
-          }
-        },
         {
           "type": "named",
           "data": {
@@ -27,6 +21,24 @@
           "type": "named",
           "data": {
             "name": "intakeMode"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Phase 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterMode"
           }
         },
         {
@@ -38,13 +50,13 @@
         {
           "type": "named",
           "data": {
-            "name": "pickup"
+            "name": "shoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shooterMode"
+            "name": "intakeMode"
           }
         },
         {
@@ -56,13 +68,13 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "pickup"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "intakeMode"
+            "name": "shooterMode"
           }
         },
         {
@@ -74,7 +86,13 @@
         {
           "type": "named",
           "data": {
-            "name": "pickup"
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeMode"
           }
         },
         {
@@ -86,7 +104,19 @@
         {
           "type": "named",
           "data": {
+            "name": "pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "shooterMode"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Phase 6"
           }
         },
         {
@@ -99,12 +129,6 @@
           "type": "named",
           "data": {
             "name": "intakeMode"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterOff"
           }
         }
       ]
