@@ -31,7 +31,7 @@ public final class Constants {
 
     public static final double climberSpeed = .75;
     public static final double intakeSpeed = .6;
-    public static final double shooterSpeed = .75;
+    public static final double shooterSpeed = .82;
     public static final double intakeMaxSpeed = .5;
     public static final int lightSensorID = 1;
     public static final double jerkBackTime = .1;
