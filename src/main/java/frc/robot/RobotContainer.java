@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Climber.ClimberSide;
@@ -45,6 +46,7 @@ public class RobotContainer {
     private final JoystickButton sideButton = new JoystickButton(operator, 2);
     private final JoystickButton bottomRightJoystick = new JoystickButton(operator, 4);
     private final JoystickButton button7 = new JoystickButton(operator, 7);
+     private final JoystickButton button11 = new JoystickButton(operator, 11);
     private final JoystickButton xButton = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton startButton = new JoystickButton(driver, XboxController.Button.kStart.value);
@@ -130,8 +132,11 @@ public class RobotContainer {
         shooter.whileTrue(shoot);
         rightBumper.whileTrue(followNote);
         button7.onTrue(autoAmp);
+        button11.whileTrue(new InstantCommand(() -> s_Intake.setIntakeMotor(false)));
+        button11.onFalse(new InstantCommand(() -> s_Intake.stopIntake()));
         up.whileTrue(new InstantCommand(() -> s_Intake.manualLift(.3)));
         down.whileTrue(new InstantCommand(() -> s_Intake.manualLift(-.3)));
+    
 
         up.onFalse(new InstantCommand(() -> s_Intake.manualLift(0)));
         down.onFalse(new InstantCommand(() -> s_Intake.manualLift(0)));

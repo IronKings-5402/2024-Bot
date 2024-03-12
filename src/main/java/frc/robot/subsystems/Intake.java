@@ -3,7 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import edu.wpi.first.wpilibj.Timer;
 import java.util.function.BooleanSupplier;
+
+import javax.swing.text.StyledEditorKit.BoldAction;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -14,8 +17,13 @@ import com.revrobotics.AbsoluteEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -40,6 +48,8 @@ public class Intake extends SubsystemBase {
   double calcSetpoint = 125;
   double currentSetpoint = Constants.shooterDegree;
   boolean manual = false;
+  Spark blinkin = new Spark(2);
+  Timer timer = new Timer();
   public enum IntakeMode {
     normal,
     shooter,
@@ -48,6 +58,7 @@ public class Intake extends SubsystemBase {
   };
 
   public IntakeMode mode = IntakeMode.shooter;
+
 
   public Intake() {
     intake.setNeutralMode(NeutralMode.Brake);
@@ -58,11 +69,20 @@ public class Intake extends SubsystemBase {
     leftShooter.setNeutralMode(NeutralModeValue.Brake);
     rightShooter.setNeutralMode(NeutralModeValue.Brake);
     SmartDashboard.putNumber("test setpoint", 125);
-
   }
 
   public double getEncoder(){
     return encoder.getAbsolutePosition()*360;
+  }
+
+
+  public void setRumble(boolean on){
+    if (on){
+      new Joystick(0).setRumble(RumbleType.kBothRumble, 1);
+    }
+    else{
+      new Joystick(0).setRumble(RumbleType.kBothRumble, 0);
+    }
   }
 
   public boolean getNote(){
@@ -186,9 +206,19 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     intake();
     if (!noteChecker.get()){
+      if (noteLoaded != true){
+        setRumble(true);
+        timer.start();
+      }
       noteLoaded = true;
+      if (timer.get() > 2.5){
+        setRumble(false);
+        timer.stop();
+        timer.reset();
+      }
     }
     else {
+      //setRumble(false);
       noteLoaded = false;
     }
 
@@ -204,19 +234,21 @@ public class Intake extends SubsystemBase {
     if (LimelightHelpers.getTV("limelight-april")){
       SmartDashboard.putBoolean("Valid Apriltag target", true);
       SmartDashboard.putNumber("FID", LimelightHelpers.getFiducialID("limelight-april"));
+      blinkin.set(.77);
     }
     else {
       SmartDashboard.putBoolean("Valid Apriltag target", false);
       SmartDashboard.putNumber("FID", 404);
+      blinkin.set(.61);
     }
     //calcSetpoint = distance * 0.194 + 104;
     if (distance < 100){
       calcSetpoint = distance * 0.197 + 106;
     }
-    else if (distance < 120 && distance > 100) {
+    else if (distance < 120 && distance >= 100) {
       calcSetpoint = distance * 0.215 + 105;
     }
-    else if (distance < 130 && distance > 120){
+    else if (distance < 130 && distance >= 120){
       calcSetpoint = distance * 0.215 + 103;
     }
     else {

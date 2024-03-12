@@ -24,7 +24,7 @@ public final class Constants {
     public static final int encoder = 0;
     public static final double pigeonOffset = 5;
 
-    public static final double intakeDegree = 92.5;
+    public static final double intakeDegree = 93.5;
     public static final double shooterDegree = 127.5; 
     public static final double ampDegree = 190.0;
     public static final double haltDegree = 105.0;
