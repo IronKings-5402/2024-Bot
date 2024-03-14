@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.8175856037874687,
-      "y": 3.18534754045257
+      "x": 1.553559470755305,
+      "y": 4.122214464115091
     },
     "rotation": 0
   },
@@ -12,9 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Backup2-1"
+            "name": "shooterMode"
           }
         },
         {
@@ -26,13 +26,49 @@
         {
           "type": "named",
           "data": {
-            "name": "shooterMode"
+            "name": "intakeMode"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Backup2-2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeMode"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of Backup2-3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterMode"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
           }
         }
       ]

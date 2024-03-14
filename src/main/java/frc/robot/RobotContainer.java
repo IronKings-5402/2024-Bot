@@ -46,7 +46,7 @@ public class RobotContainer {
     private final JoystickButton sideButton = new JoystickButton(operator, 2);
     private final JoystickButton bottomRightJoystick = new JoystickButton(operator, 4);
     private final JoystickButton button7 = new JoystickButton(operator, 7);
-     private final JoystickButton button11 = new JoystickButton(operator, 11);
+    private final JoystickButton button11 = new JoystickButton(operator, 11);
     private final JoystickButton xButton = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton startButton = new JoystickButton(driver, XboxController.Button.kStart.value);
@@ -59,7 +59,7 @@ public class RobotContainer {
     private final Swerve s_Swerve = new Swerve();
     private final Intake s_Intake = new Intake();
     private final Climber s_Climber = new Climber();
-
+    private final FeedbackSystems s_FeedbackSystems = new FeedbackSystems(driver, () -> s_Intake.getNote(), () -> s_Intake.mode, () -> s_Intake.getDistance());
     // commands 
     Command shoot = new Shoot(s_Intake,s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis));
     Command followNote = new FollowNote(s_Swerve, s_Intake,() -> -driver.getRawAxis(translationAxis));
@@ -81,7 +81,7 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean()
             )
         );
-
+        
         m_chooser.setDefaultOption("Main Auto", mainAuto);
         m_chooser.addOption("Backup Auto", backupAuto);
         m_chooser.addOption("Backup Auto 2", backupAuto2);

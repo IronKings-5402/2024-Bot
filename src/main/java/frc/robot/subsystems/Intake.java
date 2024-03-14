@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.function.BooleanSupplier;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -17,9 +15,7 @@ import com.revrobotics.AbsoluteEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -48,7 +44,6 @@ public class Intake extends SubsystemBase {
   double calcSetpoint = 125;
   double currentSetpoint = Constants.shooterDegree;
   boolean manual = false;
-  Spark blinkin = new Spark(2);
   Timer timer = new Timer();
   public enum IntakeMode {
     normal,
@@ -156,6 +151,10 @@ public class Intake extends SubsystemBase {
     currentSetpoint = setpoint;
   }
 
+  public double getDistance(){
+    return distance;
+  }
+
   public void toggleIntake(BooleanSupplier followingNote){
     if (followingNote.getAsBoolean()){
       return;
@@ -206,16 +205,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     intake();
     if (!noteChecker.get()){
-      if (noteLoaded != true){
-        setRumble(true);
-        timer.start();
-      }
       noteLoaded = true;
-      if (timer.get() > 2.5){
-        setRumble(false);
-        timer.stop();
-        timer.reset();
-      }
     }
     else {
       //setRumble(false);
@@ -230,19 +220,11 @@ public class Intake extends SubsystemBase {
     // distance = pose.getDistance(id);
     
     distance = (57-16.5)/ Math.tan(Math.toRadians(LimelightHelpers.getTY("limelight-april")+29));
-    SmartDashboard.putNumber("Distance", distance);
-    if (LimelightHelpers.getTV("limelight-april")){
-      SmartDashboard.putBoolean("Valid Apriltag target", true);
-      SmartDashboard.putNumber("FID", LimelightHelpers.getFiducialID("limelight-april"));
-      blinkin.set(.77);
-    }
-    else {
-      SmartDashboard.putBoolean("Valid Apriltag target", false);
-      SmartDashboard.putNumber("FID", 404);
-      blinkin.set(.61);
-    }
     //calcSetpoint = distance * 0.194 + 104;
-    if (distance < 100){
+    if (distance < 55){
+      calcSetpoint = distance * 0.197 + 105.5;
+    }
+    else if (distance < 100){
       calcSetpoint = distance * 0.197 + 106;
     }
     else if (distance < 120 && distance >= 100) {
@@ -256,14 +238,5 @@ public class Intake extends SubsystemBase {
     }
     //calcSetpoint = distance * 0.195 + 105;
     //calcSetpoint = distance *.845+29.2;
-    SmartDashboard.putBoolean("AI target", LimelightHelpers.getTV("limelight-ai"));
-    SmartDashboard.putBoolean("Note Loaded", noteLoaded);
-    SmartDashboard.putString("Intake Mode", mode.name());
-    if (mode == IntakeMode.halt){
-      SmartDashboard.putBoolean("Can Drive Under", true);
-    }
-    else {
-      SmartDashboard.putBoolean("Can Drive Under", false);
-    }
   }
 }

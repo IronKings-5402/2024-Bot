@@ -38,7 +38,7 @@ public final class Constants {
     public static final double ampSpeed = .10; 
 
     //intake PID
-    public static final double intakeP = .04;
+    public static final double intakeP = .045;
     public static final double intakeD = .00;
     public static final double shooterP = .04;
     public static final double noteP = .05;
