@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4311279977766789,
-      "y": 4.262744502664469
+      "x": 0.7987428243044774,
+      "y": 4.50867207012588
     },
-    "rotation": 0
+    "rotation": -55.00797980144136
   },
   "command": {
     "type": "sequential",
@@ -30,15 +30,9 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.25
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Backup2-2"
+            "pathName": "4th-1"
           }
         },
         {
@@ -50,19 +44,13 @@
         {
           "type": "named",
           "data": {
-            "name": "intakeMode"
+            "name": "shooterMode"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of Backup2-3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterMode"
+            "pathName": "4th-2"
           }
         },
         {

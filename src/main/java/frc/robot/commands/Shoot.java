@@ -9,14 +9,13 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Intake.IntakeMode;
+import frc.robot.subsystems.Swerve;
 
 public class Shoot extends Command {
   /** Creates a new Shoot. */
@@ -47,7 +46,10 @@ public class Shoot extends Command {
   public void execute() {
     // if there is not a note or the IntakeMode is not shooter 
     double shootSpeed = 0;
-    if (s_Intake.mode == IntakeMode.amp){
+    if (s_Intake.mode == IntakeMode.skid){
+      shootSpeed = Constants.shooterSpeed;
+    }
+    else if (s_Intake.mode == IntakeMode.amp){
       shootSpeed = Constants.ampSpeed;
     }
     else {
@@ -57,10 +59,10 @@ public class Shoot extends Command {
 
     s_Intake.setShooter(shootSpeed);
 
-    if (timer.get() > 3 && s_Intake.mode == IntakeMode.amp){
+    if (timer.get() > 3 && (s_Intake.mode == IntakeMode.amp || s_Intake.mode == IntakeMode.skid)){
       end = true;
     }
-    else if(timer.get() > 2.82 && s_Intake.mode == IntakeMode.amp){
+    else if(timer.get() > 2.82 && (s_Intake.mode == IntakeMode.amp || s_Intake.mode == IntakeMode.skid)){
       s_Intake.setIntakeMotor(true, .4);
     }
     else if (timer.get()> 1.2){
@@ -72,7 +74,6 @@ public class Shoot extends Command {
 
     
     // timeout  
-    
     
     double rotationVal = 0;
     if (LimelightHelpers.getTV("limelight-april")){

@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-import edu.wpi.first.wpilibj.Timer;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -17,9 +16,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -44,11 +43,13 @@ public class Intake extends SubsystemBase {
   double calcSetpoint = 125;
   double currentSetpoint = Constants.shooterDegree;
   boolean manual = false;
+  boolean backup = false;
   Timer timer = new Timer();
   public enum IntakeMode {
     normal,
     shooter,
     amp,
+    skid,
     halt
   };
 
@@ -64,6 +65,7 @@ public class Intake extends SubsystemBase {
     leftShooter.setNeutralMode(NeutralModeValue.Brake);
     rightShooter.setNeutralMode(NeutralModeValue.Brake);
     SmartDashboard.putNumber("test setpoint", 125);
+    
   }
 
   public double getEncoder(){
@@ -82,6 +84,9 @@ public class Intake extends SubsystemBase {
 
   public boolean getNote(){
     return noteLoaded;
+  }
+  public void setBackup(boolean backup){
+    this.backup = backup;
   }
 
   public void goToSetpoint(double setpoint){
@@ -141,10 +146,18 @@ public class Intake extends SubsystemBase {
     else if (this.mode == IntakeMode.amp){
       setpoint = Constants.ampDegree;
     }
+    else if (this.mode == IntakeMode.skid){
+      setpoint = Constants.skidDegree;
+    }
 
     else if (this.mode == IntakeMode.halt){
       setpoint = Constants.haltDegree;
-      stopIntake();
+      if (backup){
+        setIntakeMotor(false);
+      }
+      else {
+        stopIntake();
+      }
     }
 
     goToSetpoint(setpoint);
@@ -203,6 +216,7 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("angle", getEncoder());
     intake();
     if (!noteChecker.get()){
       noteLoaded = true;
@@ -222,20 +236,20 @@ public class Intake extends SubsystemBase {
     distance = (57-16.5)/ Math.tan(Math.toRadians(LimelightHelpers.getTY("limelight-april")+29));
     //calcSetpoint = distance * 0.194 + 104;
     if (distance < 55){
-      calcSetpoint = distance * 0.197 + 105.5;
+      calcSetpoint = distance * 0.197 + 105.5+14;
     }
     else if (distance < 100){
-      calcSetpoint = distance * 0.197 + 106;
+      calcSetpoint = distance * 0.197 + 106+14;
     }
     else if (distance < 120 && distance >= 100) {
-      calcSetpoint = distance * 0.215 + 105;
+      calcSetpoint = distance * 0.215 + 105+14;
     }
     else if (distance < 130 && distance >= 120){
-      calcSetpoint = distance * 0.215 + 103;
+      calcSetpoint = distance * 0.215 + 103+14;
     }
     else {
-      calcSetpoint = distance * 0.215 + 100;
-    }
+      calcSetpoint = distance * 0.215 + 100+14;
+    };
     //calcSetpoint = distance * 0.195 + 105;
     //calcSetpoint = distance *.845+29.2;
   }

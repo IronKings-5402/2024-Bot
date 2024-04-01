@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Climber.ClimberSide;
@@ -50,6 +49,7 @@ public class RobotContainer {
     private final JoystickButton xButton = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton startButton = new JoystickButton(driver, XboxController.Button.kStart.value);
+    private final JoystickButton button9 = new JoystickButton(operator, 9);
 
     private final POVButton up = new POVButton(operator, 0);
     private final POVButton down = new POVButton(operator, 180);
@@ -68,6 +68,7 @@ public class RobotContainer {
     private String mainAuto = "Main";
     private String backupAuto2 = "Backup2";
     private String backupAuto = "ShootAndGo";
+    private String around2 = "around2";
 
     SendableChooser<String> m_chooser = new SendableChooser<>();
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -82,9 +83,10 @@ public class RobotContainer {
             )
         );
         
-        m_chooser.setDefaultOption("Main Auto", mainAuto);
-        m_chooser.addOption("Backup Auto", backupAuto);
-        m_chooser.addOption("Backup Auto 2", backupAuto2);
+        m_chooser.setDefaultOption("4-note", mainAuto);
+        m_chooser.addOption("Around Field", backupAuto);
+        m_chooser.addOption("Through Field", backupAuto2);
+        m_chooser.addOption("Through Field 2", around2);
         SmartDashboard.putData(m_chooser);
         // Configure the button bindings
         //s_Intake.setDefaultCommand(new InstantCommand(() -> s_Intake.intake(), s_Intake));
@@ -112,28 +114,23 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
-        aButton.whileTrue(new InstantCommand(() -> s_Climber.climberSet(ClimberSide.left, false)));
-        bButton.whileTrue(new InstantCommand(() -> s_Climber.climberSet(ClimberSide.right, false)));
-        xButton.whileTrue(new InstantCommand(() -> s_Climber.climberSet(ClimberSide.left, true)));
-        yButton.whileTrue(new InstantCommand(() -> s_Climber.climberSet(ClimberSide.right, true)));
-
-        aButton.onFalse(new InstantCommand(() -> s_Climber.climberStop(ClimberSide.left)));
-        bButton.onFalse(new InstantCommand(() -> s_Climber.climberStop(ClimberSide.right)));
-        xButton.onFalse(new InstantCommand(() -> s_Climber.climberStop(ClimberSide.left)));
-        yButton.onFalse(new InstantCommand(() -> s_Climber.climberStop(ClimberSide.right)));
-
+        aButton.onTrue(new InstantCommand(() -> s_Climber.climberSet(ClimberSide.left, false))).onFalse(new InstantCommand(() -> s_Climber.climberStop(ClimberSide.left)));
+        bButton.onTrue(new InstantCommand(() -> s_Climber.climberSet(ClimberSide.right, false))).onFalse(new InstantCommand(() -> s_Climber.climberStop(ClimberSide.right)));
+        xButton.onTrue(new InstantCommand(() -> s_Climber.climberSet(ClimberSide.left, true))).onFalse(new InstantCommand(() -> s_Climber.climberStop(ClimberSide.left)));
+        yButton.onTrue(new InstantCommand(() -> s_Climber.climberSet(ClimberSide.right, true))).onFalse(new InstantCommand(() -> s_Climber.climberStop(ClimberSide.right)));
 
         bottomLeftJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
         topLeftJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
         bottomRightJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.amp)));
         topRightJoystick.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.halt)));
+        button9.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.skid)));
 
         sideButton.onTrue(new InstantCommand(() -> s_Intake.toggleIntake(() -> rightBumper.getAsBoolean())));
         shooter.whileTrue(shoot);
         rightBumper.whileTrue(followNote);
         button7.onTrue(autoAmp);
-        button11.whileTrue(new InstantCommand(() -> s_Intake.setIntakeMotor(false)));
-        button11.onFalse(new InstantCommand(() -> s_Intake.stopIntake()));
+        button11.onTrue(new InstantCommand(() -> s_Intake.setBackup(true)));
+        button11.onFalse(new InstantCommand(() -> s_Intake.setBackup(false)));
         up.whileTrue(new InstantCommand(() -> s_Intake.manualLift(.3)));
         down.whileTrue(new InstantCommand(() -> s_Intake.manualLift(-.3)));
     

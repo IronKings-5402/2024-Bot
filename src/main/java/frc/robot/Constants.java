@@ -24,10 +24,12 @@ public final class Constants {
     public static final int encoder = 0;
     public static final double pigeonOffset = 5;
 
-    public static final double intakeDegree = 93.5;
-    public static final double shooterDegree = 127.5; 
-    public static final double ampDegree = 190.0;
-    public static final double haltDegree = 105.0;
+    public static final double intakeDegree = 93.5+16.8;
+    public static final double shooterDegree = 127.5+16.8; 
+    public static final double ampDegree = 190.0+15;
+    public static final double haltDegree = 105.0+16.8;
+    public static final double skidDegree = 170.0+16.8;
+
 
     public static final double climberSpeed = .75;
     public static final double intakeSpeed = .6;

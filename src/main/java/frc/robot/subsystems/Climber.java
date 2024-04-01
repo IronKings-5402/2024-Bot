@@ -4,13 +4,14 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 public class Climber extends SubsystemBase {
-  PWMSparkMax leftClimber = new PWMSparkMax(0);
-  PWMSparkMax rightClimber = new PWMSparkMax(1);
+  CANSparkMax leftClimber = new CANSparkMax(44, MotorType.kBrushless);
+  CANSparkMax rightClimber = new CANSparkMax(45, MotorType.kBrushless);
   
   /** Creates a new Climber. */
   public Climber() {
