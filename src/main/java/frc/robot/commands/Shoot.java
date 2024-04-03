@@ -25,7 +25,7 @@ public class Shoot extends Command {
   boolean end = false;
   DoubleSupplier translation;
   DoubleSupplier strafe;
-  PIDController controller = new PIDController(Constants.shooterP, 0, 0);
+  PIDController controller = new PIDController(Constants.aimP, 0, 0);
   public Shoot(Intake s_Intake, Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup) {
     this.s_Swerve = s_Swerve;
     this.s_Intake = s_Intake;
@@ -46,7 +46,7 @@ public class Shoot extends Command {
   public void execute() {
     // if there is not a note or the IntakeMode is not shooter 
     double shootSpeed = 0;
-    if (s_Intake.mode == IntakeMode.skid){
+    if (s_Intake.mode == IntakeMode.skid || s_Intake.mode == IntakeMode.safe){
       shootSpeed = Constants.shooterSpeed;
     }
     else if (s_Intake.mode == IntakeMode.amp){

@@ -14,6 +14,7 @@ import com.revrobotics.AbsoluteEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -45,12 +46,14 @@ public class Intake extends SubsystemBase {
   boolean manual = false;
   boolean backup = false;
   Timer timer = new Timer();
+  InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
   public enum IntakeMode {
     normal,
     shooter,
     amp,
     skid,
-    halt
+    halt,
+    safe
   };
 
   public IntakeMode mode = IntakeMode.shooter;
@@ -64,12 +67,19 @@ public class Intake extends SubsystemBase {
     intakeLiftLeft.setInverted(true);
     leftShooter.setNeutralMode(NeutralModeValue.Brake);
     rightShooter.setNeutralMode(NeutralModeValue.Brake);
-    SmartDashboard.putNumber("test setpoint", 125);
-    
+    SmartDashboard.putNumber("test setpoint", 125); 
+    map.put(42.0, 110.0); 
+    map.put(61.0, 111.5); 
+    map.put(75.5, 116.25); 
+    map.put(90.7, 118.0);
+    map.put(113.5, 122.1);
+    map.put(122.88, 122.775);
+    map.put(132.9, 123.25);
+    map.put(108.3, 126.0);
   }
 
   public double getEncoder(){
-    return encoder.getAbsolutePosition()*360;
+    return encoder.getAbsolutePosition()*360-16.5;
   }
 
 
@@ -160,6 +170,10 @@ public class Intake extends SubsystemBase {
       }
     }
 
+    else if (this.mode == IntakeMode.safe){
+      setpoint = Constants.safeDegree;
+    }
+
     goToSetpoint(setpoint);
     currentSetpoint = setpoint;
   }
@@ -234,22 +248,24 @@ public class Intake extends SubsystemBase {
     // distance = pose.getDistance(id);
     
     distance = (57-16.5)/ Math.tan(Math.toRadians(LimelightHelpers.getTY("limelight-april")+29));
+    calcSetpoint = map.get(distance);
+    // if (distance < 55){
+    //   calcSetpoint = distance * 0.197 + 105.5;
+    // }
+    // else if (distance < 100){
+    //   calcSetpoint = distance * 0.197 + 106;
+    // }
+    // else if (distance < 120 && distance >= 100) {
+    //   calcSetpoint = distance * 0.215 + 105;
+    // }
+    // else if (distance < 130 && distance >= 120){
+    //   calcSetpoint = distance * 0.215 + 103;
+    // }
+    // else {
+    //   calcSetpoint = distance * 0.215 + 100;
+    // }
+
     //calcSetpoint = distance * 0.194 + 104;
-    if (distance < 55){
-      calcSetpoint = distance * 0.197 + 105.5+14;
-    }
-    else if (distance < 100){
-      calcSetpoint = distance * 0.197 + 106+14;
-    }
-    else if (distance < 120 && distance >= 100) {
-      calcSetpoint = distance * 0.215 + 105+14;
-    }
-    else if (distance < 130 && distance >= 120){
-      calcSetpoint = distance * 0.215 + 103+14;
-    }
-    else {
-      calcSetpoint = distance * 0.215 + 100+14;
-    };
     //calcSetpoint = distance * 0.195 + 105;
     //calcSetpoint = distance *.845+29.2;
   }

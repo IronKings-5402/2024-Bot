@@ -45,6 +45,7 @@ public class RobotContainer {
     private final JoystickButton sideButton = new JoystickButton(operator, 2);
     private final JoystickButton bottomRightJoystick = new JoystickButton(operator, 4);
     private final JoystickButton button7 = new JoystickButton(operator, 7);
+    private final JoystickButton button8 = new JoystickButton(operator, 8);
     private final JoystickButton button11 = new JoystickButton(operator, 11);
     private final JoystickButton xButton = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
@@ -129,6 +130,7 @@ public class RobotContainer {
         shooter.whileTrue(shoot);
         rightBumper.whileTrue(followNote);
         button7.onTrue(autoAmp);
+        button8.onTrue(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.safe)));
         button11.onTrue(new InstantCommand(() -> s_Intake.setBackup(true)));
         button11.onFalse(new InstantCommand(() -> s_Intake.setBackup(false)));
         up.whileTrue(new InstantCommand(() -> s_Intake.manualLift(.3)));
