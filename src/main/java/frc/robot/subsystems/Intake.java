@@ -68,14 +68,12 @@ public class Intake extends SubsystemBase {
     leftShooter.setNeutralMode(NeutralModeValue.Brake);
     rightShooter.setNeutralMode(NeutralModeValue.Brake);
     SmartDashboard.putNumber("test setpoint", 125); 
-    map.put(42.0, 110.0); 
-    map.put(61.0, 111.5); 
-    map.put(75.5, 116.25); 
-    map.put(90.7, 118.0);
-    map.put(113.5, 122.1);
-    map.put(122.88, 122.775);
-    map.put(132.9, 123.25);
-    map.put(108.3, 126.0);
+    map.put(40.35, 110.0); 
+    map.put(60.5, 114.0); 
+    map.put(73.5, 118.0); 
+    map.put(82.25, 120.0);
+    map.put(102.05, 125.35);
+    map.put(124.8, 127.75);
   }
 
   public double getEncoder(){

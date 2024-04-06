@@ -24,18 +24,18 @@ public final class Constants {
     public static final int encoder = 0;
     public static final double pigeonOffset = 5;
 
-    public static final double intakeDegree = 93.5-3.1;
+    public static final double intakeDegree = 93.5+.5;
     public static final double shooterDegree = 127.5; 
     public static final double ampDegree = 190.0;
     public static final double haltDegree = 105.0;
     public static final double skidDegree = 170.0;
-    public static final double safeDegree = 120.5;
+    public static final double safeDegree = 127.75;
 
 
     public static final double climberSpeed = .75;
     public static final double intakeSpeed = .6;
     public static final double shooterSpeed = .82;
-    public static final double intakeMaxSpeed = .5;
+    public static final double intakeMaxSpeed = .75;
     public static final int lightSensorID = 1;
     public static final double jerkBackTime = .1;
     public static final double ampSpeed = .10; 
