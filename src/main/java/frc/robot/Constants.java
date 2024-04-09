@@ -21,7 +21,7 @@ public final class Constants {
     public static final int rightClimberId = 95;
     public static final int rightShooterId = 4;
     public static final int leftShooterId = 3;
-    public static final int encoder = 0;
+    public static final int encoder = 3;
     public static final double pigeonOffset = 5;
 
     public static final double intakeDegree = 93.5+.5;
