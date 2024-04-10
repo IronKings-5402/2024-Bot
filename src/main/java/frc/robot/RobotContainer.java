@@ -68,7 +68,7 @@ public class RobotContainer {
     private String mainAuto = "Main";
     private String backupAuto2 = "Backup2";
     private String backupAuto = "ShootAndGo";
-
+ /** Select the auto . */
     SendableChooser<String> m_chooser = new SendableChooser<>();
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -92,6 +92,7 @@ public class RobotContainer {
         autoAmp.addCommands(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.amp)));
         autoAmp.addCommands(new Shoot(s_Intake, s_Swerve, () -> -driver.getRawAxis(translationAxis), () -> -driver.getRawAxis(strafeAxis)));
         autoAmp.addCommands(new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)) );
+        /** Path Planner */
         NamedCommands.registerCommand("shooterMode", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.shooter)));
         NamedCommands.registerCommand("intakeMode", new InstantCommand(() -> s_Intake.setIntakeMode(IntakeMode.normal)));
         NamedCommands.registerCommand("intakeOn", new InstantCommand(() -> s_Intake.toggleIntake(true)));
