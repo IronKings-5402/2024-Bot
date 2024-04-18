@@ -3,6 +3,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Climber.ClimberSide;
@@ -141,7 +143,6 @@ public class RobotContainer {
         down.onFalse(new InstantCommand(() -> s_Intake.manualLift(0)));
 
         startButton.onTrue(new InstantCommand(() -> s_Intake.toggleManual()));
-
         //rightBumper.onTrue(new InstantCommand(() -> s_Intake.))
     }
 

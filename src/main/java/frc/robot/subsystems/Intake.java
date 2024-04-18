@@ -8,14 +8,19 @@ import java.util.function.BooleanSupplier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.AbsoluteEncoder;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
@@ -45,8 +50,12 @@ public class Intake extends SubsystemBase {
   double currentSetpoint = Constants.shooterDegree;
   boolean manual = false;
   boolean backup = false;
+  boolean synced = false;
   Timer timer = new Timer();
   InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
+  PositionVoltage request = new PositionVoltage(.5);
+  StrictFollower follow = new StrictFollower(intakeLiftLeft.getDeviceID());
+  StatusCode setterSignal;
   public enum IntakeMode {
     normal,
     shooter,
@@ -61,23 +70,32 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     intake.setNeutralMode(NeutralMode.Brake);
-    intakeLiftLeft.setNeutralMode(NeutralModeValue.Brake);
-    intakeLiftRight.setNeutralMode(NeutralModeValue.Brake);
-    intakeLiftRight.setInverted(false);
-    intakeLiftLeft.setInverted(true);
     leftShooter.setNeutralMode(NeutralModeValue.Brake);
     rightShooter.setNeutralMode(NeutralModeValue.Brake);
     SmartDashboard.putNumber("test setpoint", 125); 
-    map.put(40.35, 110.0); 
-    map.put(60.5, 114.0); 
-    map.put(73.5, 118.0); 
-    map.put(82.25, 120.0);
-    map.put(102.05, 125.35);
-    map.put(124.8, 127.75);
+    map.put(40.35, 115.0+3); 
+    map.put(60.5, 114.0+3); 
+    map.put(73.5, 118.0+3); 
+    map.put(82.25, 120.0+3);
+    map.put(102.05, 125.35+3);
+    map.put(124.8, 127.75+3);
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    config.Feedback.SensorToMechanismRatio = 278.4;
+    config.Slot0.kP = 96;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    intakeLiftLeft.getConfigurator().apply(config);
+    intakeLiftRight.getConfigurator().apply(config);
+    intakeLiftLeft.setInverted(true);
   }
 
   public double getEncoder(){
     return encoder.getAbsolutePosition()*360-16.5;
+  }
+
+  public void resetMotor(){
+    intakeLiftLeft.setPosition(getEncoder()/360, 1.0);
   }
 
 
@@ -98,10 +116,8 @@ public class Intake extends SubsystemBase {
   }
 
   public void goToSetpoint(double setpoint){
-    double calculatedSpeed = controller.calculate(getEncoder(), setpoint);
-    calculatedSpeed = MathUtil.clamp(calculatedSpeed, -Constants.intakeMaxSpeed, Constants.intakeMaxSpeed);
-    intakeLiftLeft.set(calculatedSpeed);
-    intakeLiftRight.set(calculatedSpeed);
+    intakeLiftLeft.setControl(request.withPosition(setpoint/360));
+    intakeLiftRight.setControl(follow);
   }
 
   public void setShooter(double speed){
@@ -230,6 +246,10 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("angle", getEncoder());
     intake();
+    if (DriverStation.isEnabled() && !synced){
+      intakeLiftLeft.setPosition(getEncoder()/360, 1.0);
+      synced = true;
+    }
     if (!noteChecker.get()){
       noteLoaded = true;
     }
