@@ -73,12 +73,11 @@ public class Intake extends SubsystemBase {
     leftShooter.setNeutralMode(NeutralModeValue.Brake);
     rightShooter.setNeutralMode(NeutralModeValue.Brake);
     SmartDashboard.putNumber("test setpoint", 125); 
-    map.put(40.35, 115.0+3); 
-    map.put(60.5, 114.0+3); 
-    map.put(73.5, 118.0+3); 
-    map.put(82.25, 120.0+3);
-    map.put(102.05, 125.35+3);
-    map.put(124.8, 127.75+3);
+    map.put(41.23, 113.0); 
+    map.put(68.55, 120.0); 
+    map.put(78.26, 125.5); 
+    map.put(101.78, 129.0);
+    map.put(125.95, 134.0);
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     config.Feedback.SensorToMechanismRatio = 278.4;
